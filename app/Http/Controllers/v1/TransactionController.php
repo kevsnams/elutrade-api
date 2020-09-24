@@ -111,6 +111,7 @@ class TransactionController extends Controller
 
         $transaction = Transaction::ofSeller($request->user()->id)->first();
 
+        // [ W I P ]
         if (is_null($transaction)) {
             return response()->json([
                 'success' => false,
