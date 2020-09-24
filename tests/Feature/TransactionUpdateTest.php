@@ -54,7 +54,7 @@ class TransactionUpdateTest extends TestCase
         $buyer = User::factory()->create();
         $transaction = Transaction::ofSeller($seller->id)->first();
 
-        $response = $this->actingAs($seller)
+        $response = $this->actingAs($seller, 'api')
             ->putJson('api/v1/transactions/'. $transaction->id, [
                 'buyer' => $buyer->id
             ]);
@@ -74,7 +74,7 @@ class TransactionUpdateTest extends TestCase
         $transaction->buyer_user_id = null;
         $transaction->save();
 
-        $response = $this->actingAs($seller)
+        $response = $this->actingAs($seller, 'api')
             ->putJson('api/v1/transactions/'. $transaction->id, [
                 'buyer' => $buyer->id
             ]);
@@ -93,7 +93,7 @@ class TransactionUpdateTest extends TestCase
 
         $transaction = Transaction::ofSeller($seller->id)->first();
 
-        $response = $this->actingAs($seller)
+        $response = $this->actingAs($seller, 'api')
             ->putJson('api/v1/transactions/'. $transaction->id, [
                 'status' => 9999
             ]);
@@ -110,7 +110,7 @@ class TransactionUpdateTest extends TestCase
 
         $transaction = Transaction::ofSeller($seller->id)->first();
 
-        $response = $this->actingAs($seller)
+        $response = $this->actingAs($seller, 'api')
             ->putJson('api/v1/transactions/'. $transaction->id, [
                 'status' => 1
             ]);
@@ -129,7 +129,7 @@ class TransactionUpdateTest extends TestCase
 
         $transaction = Transaction::ofSeller($seller->id)->first();
 
-        $response = $this->actingAs($seller)
+        $response = $this->actingAs($seller, 'api')
             ->putJson('api/v1/transactions/'. $transaction->id, [
                 'amount' => '2x00'
             ]);
@@ -146,7 +146,7 @@ class TransactionUpdateTest extends TestCase
 
         $transaction = Transaction::ofSeller($seller->id)->first();
 
-        $response = $this->actingAs($seller)
+        $response = $this->actingAs($seller, 'api')
             ->putJson('api/v1/transactions/'. $transaction->id, [
                 'amount' => '20330.00'
             ]);
@@ -165,7 +165,7 @@ class TransactionUpdateTest extends TestCase
 
         $transaction = Transaction::ofSeller($seller->id)->first();
 
-        $response = $this->actingAs($seller)
+        $response = $this->actingAs($seller, 'api')
             ->putJson('api/v1/transactions/'. $transaction->id, [
                 'amount' => 20330.68
             ]);
@@ -206,7 +206,7 @@ class TransactionUpdateTest extends TestCase
         $transaction->buyer_user_id = null;
         $transaction->save();
 
-        $response = $this->actingAs($seller)
+        $response = $this->actingAs($seller, 'api')
             ->putJson('api/v1/transactions/'. $transaction->id, [
                 'buyer' => $buyer->id,
                 'status' => 1,

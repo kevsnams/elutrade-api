@@ -12,6 +12,12 @@ class TransactionReadTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * NOTE: Fetching a single transaction should not have a middleware 'auth:api',
+     * It can be publicly accessed IF buyer_user_id is NULL
+     * If buyer_user_id IS NOT NULL, then it should only be visible to buyer/seller involved in the transaction
+     */
+
     public function testSuccessfulSingleFetch()
     {
         $transaction = Transaction::factory()->create();
