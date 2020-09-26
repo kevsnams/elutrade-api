@@ -16,8 +16,8 @@
 ##### Response
 ```json
 {
-	success: true,
-	auth_token: "soMe_ToK3n_$tR1ng_h3rE"
+	"success": true,
+	"auth_token": "soMe_ToK3n_$tR1ng_h3rE"
 }
 ```
 
@@ -50,7 +50,7 @@
 ##### Response
 ```json
 {
-	success: true
+	"success": true
 }
 ```
 
