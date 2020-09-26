@@ -37,7 +37,7 @@
 ##### Response
 ```json
 {
-	success: true
+	"success": true
 }
 ```
 
