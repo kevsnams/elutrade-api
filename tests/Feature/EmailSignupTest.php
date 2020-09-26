@@ -12,6 +12,9 @@ class EmailSignupTest extends TestCase
     use RefreshDatabase;
     use WithFaker;
 
+    /**
+     * @TODO Match the tests here as describe on README.md
+     */
     public function testPasswordsMismatch()
     {
         $response = $this->postJson('api/v1/signup/email', [

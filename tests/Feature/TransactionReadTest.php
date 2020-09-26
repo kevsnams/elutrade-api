@@ -18,12 +18,84 @@ class TransactionReadTest extends TestCase
      * If buyer_user_id IS NOT NULL, then it should only be visible to buyer/seller involved in the transaction
      */
 
-    public function testSuccessfulSingleFetch()
+    public function testBuyerFetching()
+    {
+        $transaction = Transaction::factory()->create();
+
+        $response = $this->actingAs($transaction->buyer, 'api')
+            ->getJson('api/v1/transactions/'. $transaction->id);
+
+        $response->assertSuccessful();
+        $response->assertJson([
+            'success' => true,
+            'transaction' => []
+        ]);
+    }
+
+    public function testDifferentBuyerFetching()
+    {
+        $transaction = Transaction::factory()->create();
+        $buyer = User::factory()->create();
+
+        $response = $this->actingAs($buyer, 'api')
+            ->getJson('api/v1/transactions/'. $transaction->id);
+
+        $response->assertSuccessful();
+        $response->assertJson([
+            'success' => true,
+            'transaction' => null
+        ], true);
+    }
+
+    public function testSellerFetching()
     {
         $transaction = Transaction::factory()->create();
 
         $response = $this->actingAs($transaction->seller, 'api')
             ->getJson('api/v1/transactions/'. $transaction->id);
+
+        $response->assertSuccessful();
+        $response->assertJson([
+            'success' => true,
+            'transaction' => []
+        ]);
+    }
+
+    public function testDifferentSellerFetching()
+    {
+        $transaction = Transaction::factory()->create();
+
+        $response = $this->actingAs($transaction->seller, 'api')
+            ->getJson('api/v1/transactions/'. $transaction->id);
+
+        $response->assertSuccessful();
+        $response->assertJson([
+            'success' => true,
+            'transaction' => null
+        ]);
+    }
+
+    public function testNonAuthUserFetchingWithBuyer()
+    {
+        $transaction = Transaction::factory()->create();
+
+        $response = $this->getJson('api/v1/transactions/'. $transaction->id);
+
+        $response->assertSuccessful();
+        $response->assertJson([
+            'success' => true,
+            'transaction' => null
+        ], true);
+    }
+
+    public function testNonAuthUserFetchingWithoutBuyer()
+    {
+        $transaction = Transaction::factory()->make();
+        $transaction->buyer_user_id = null;
+        $transaction->save();
+        $transaction->refresh();
+
+        $response = $this->getJson('api/v1/transactions/'. $transaction->id);
 
         $response->assertSuccessful();
         $response->assertJson([
@@ -39,9 +111,8 @@ class TransactionReadTest extends TestCase
         $response = $this->actingAs($seller, 'api')
             ->getJson('api/v1/transactions/99');
 
-        $response->assertStatus(404);
         $response->assertJson([
-            'success' => false,
+            'success' => true,
             'transaction' => null
         ]);
     }

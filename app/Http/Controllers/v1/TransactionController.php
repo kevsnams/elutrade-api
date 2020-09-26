@@ -7,6 +7,7 @@ use App\Http\Resources\Transactions as TransactionsResource;
 use App\Http\Controllers\Controller;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
 class TransactionController extends Controller
@@ -64,14 +65,22 @@ class TransactionController extends Controller
      */
     public function show(Request $request, $id)
     {
-        $transaction = Transaction::ofSeller($request->user()->id)
-            ->where('id', $id)
-            ->first();
+        $transaction = Transaction::find($id);
 
-        return $transaction ? new TransactionResource($transaction) : response()->json([
-            'success' => false,
-            'transaction' => null
-        ], 404);
+        if ($transaction) {
+            return response()->json([
+                'success' => true,
+                'transaction' => null
+            ]);
+        }
+
+        if (Auth::check()) {
+            if (!is_null($transaction->buyer) && !in_array($request->user()->id, [$transaction->buyer->id, $transaction->seller->id])) {
+
+            }
+        }
+
+        return new TransactionResource($transaction);
     }
 
     /**

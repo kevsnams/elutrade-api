@@ -16,9 +16,7 @@ Route::post('/signup/facebook', [SignupController::class, 'facebook']);
 Route::post('/signup/google', [SignupController::class, 'google']);
 
 Route::middleware('auth:api')->group(function () {
-    Route::apiResources([
-        'transactions' => TransactionController::class
-    ]);
+    Route::apiResource('transactions', TransactionController::class, ['except' => 'show']);
 });
 
 /*
