@@ -33,6 +33,7 @@ class TransactionController extends Controller
     {
         $request->validate([
             'buyer' => [
+                'present',
                 'nullable',
                 'exists:users,id'
             ],

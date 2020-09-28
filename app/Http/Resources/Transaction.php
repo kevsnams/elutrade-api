@@ -21,6 +21,7 @@ class Transaction extends JsonResource
                 'seller' => $this->seller,
                 'buyer' => $this->buyer,
                 'status' => $this->status,
+                'amount' => $this->amount,
                 'created_at' => $this->created_at,
                 'updated_at' => $this->updated_at
             ]

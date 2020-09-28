@@ -14,10 +14,6 @@ class Transaction extends Model
     const STATUS_ACTIVE = 2;
     const STATUS_CLOSED = 3;
 
-    protected $casts = [
-        'amount' => 'decimal:16'
-    ];
-
     public function seller()
     {
         return $this->belongsTo('App\Models\User', 'seller_user_id');
