@@ -71,7 +71,7 @@ Creates a transaction
 ##### Response
 ```json
 {
-	"success": true,
+    "success": true,
     "transaction": {
         "id": "TRANSACTION_ID",
         "seller": "JSON_OBJECT_THAT_CONTAINS_SELLER_INFORMATION",
