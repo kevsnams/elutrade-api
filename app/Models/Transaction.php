@@ -14,6 +14,10 @@ class Transaction extends Model
     const STATUS_ACTIVE = 2;
     const STATUS_CLOSED = 3;
 
+    protected $hidden = [
+        'seller_user_id', 'buyer_user_id'
+    ];
+
     public function seller()
     {
         return $this->belongsTo('App\Models\User', 'seller_user_id');
