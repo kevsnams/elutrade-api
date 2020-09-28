@@ -66,6 +66,7 @@ Creates a transaction
 | Parameter | Data Type ||
 | ------------ | ------------ | ------------ |
 | buyer | Integer/Null | Should be present but can be null (no buyer). If `buyer` is an Integer, then it will look for the User.id |
+| amount | Numeric | Required, Numeric (e.g. 200/200.69) 
 
 ##### Response
 ```json
