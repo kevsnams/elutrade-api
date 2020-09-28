@@ -12,71 +12,110 @@ class EmailSignupTest extends TestCase
     use RefreshDatabase;
     use WithFaker;
 
-    /**
-     * @TODO Match the tests here as describe on README.md
-     */
-    public function testPasswordsMismatch()
+    public function testMissingAll()
     {
-        $response = $this->postJson('api/v1/signup/email', [
-            'email' => $this->faker->safeEmail,
-            'password' => 'password',
-            'password_repeat' => 'no_match',
-            'agreed_terms' => true
-        ]);
+        $response = $this->postJson('api/v1/signup/email', []);
 
+        $response->assertStatus(422);
         $response->assertJsonValidationErrors([
-            'password_repeat'
+            'email', 'password', 'password_confirm', 'first_name', 'last_name', 'agreed_terms'
         ]);
     }
 
-    public function testDisagreedTerms()
+    public function testExistingEmail()
     {
-        $response = $this->postJson('api/v1/signup/email', [
-            'email' => $this->faker->safeEmail,
-            'password' => 'password',
-            'password_repeat' => 'password',
-            'agreed_terms' => false
-        ]);
-
-        $response->assertJsonValidationErrors([
-            'agreed_terms'
-        ]);
-    }
-
-    public function testDuplicateEmail()
-    {
-        $user = User::factory()->create();
+        $existingUser = User::factory()->create();
 
         $response = $this->postJson('api/v1/signup/email', [
-            'email' => $user->email,
+            'email' => $existingUser->email,
             'password' => 'password',
-            'password_repeat' => 'password',
+            'password_confirm' => 'password',
+            'first_name' => $this->faker->firstName,
+            'last_name' => $this->faker->lastName,
             'agreed_terms' => true
         ]);
 
+        $response->assertStatus(422);
         $response->assertJsonValidationErrors([
             'email'
         ]);
     }
 
-    public function testSuccessfulSignup()
+    public function testIncorrectEmailFormat()
     {
-        $email = $this->faker->safeEmail;
-
         $response = $this->postJson('api/v1/signup/email', [
-            'email' => $email,
+            'email' => 'wrong.email#@#@',
             'password' => 'password',
-            'password_repeat' => 'password',
+            'password_confirm' => 'wordpass',
+            'first_name' => $this->faker->firstName,
+            'last_name' => $this->faker->lastName,
             'agreed_terms' => true
         ]);
 
-        $response->assertSuccessful();
-        $response->assertJson([
-            'success' => true
-        ], true);
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors([
+            'email'
+        ]);
+    }
 
-        $this->assertDatabaseHas('users', [
-            'email' => $email
+    public function testPasswordMismatch()
+    {
+        $response = $this->postJson('api/v1/signup/email', [
+            'email' => $this->faker->safeEmail,
+            'password' => 'password',
+            'password_confirm' => 'wordpass',
+            'first_name' => $this->faker->firstName,
+            'last_name' => $this->faker->lastName,
+            'agreed_terms' => true
+        ]);
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors([
+            'password_confirm'
+        ]);
+    }
+
+    public function testCorrectSignup()
+    {
+        $newUser = [
+            'email' => $this->faker->safeEmail,
+            'first_name' => $this->faker->firstName,
+            'middle_name' => $this->faker->lastName,
+            'last_name' => $this->faker->lastName,
+        ];
+
+        $response = $this->postJson('api/v1/signup/email', array_merge(
+            $newUser,
+            [
+                'password' => 'password',
+                'password_confirm' => 'password',
+                'agreed_terms' => true
+            ]
+        ));
+
+        $response->assertSuccessful();
+        $response->assertJson(['success' => true], true);
+
+        $this->assertDatabaseHas('users', $newUser);
+    }
+
+    public function testDisagreedTerms()
+    {
+        $response = $this->postJson('api/v1/signup/email', array_merge(
+            [
+                'email' => $this->faker->safeEmail,
+                'password' => 'password',
+                'password_confirm' => 'password',
+                'first_name' => $this->faker->firstName,
+                'middle_name' => $this->faker->lastName,
+                'last_name' => $this->faker->lastName,
+                'agreed_terms' => false
+            ]
+        ));
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors([
+            'agreed_terms'
         ]);
     }
 }

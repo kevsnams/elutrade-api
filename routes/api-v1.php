@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\v1\AuthController;
 use App\Http\Controllers\v1\SignupController;
 use App\Http\Controllers\v1\TransactionController;
 use Illuminate\Http\Request;
@@ -10,6 +11,8 @@ use Illuminate\Support\Facades\Route;
  * VERSION 1
  * ------------------------------------------------------------------------
  */
+
+Route::post('/auth', [AuthController::class, 'login']);
 
 Route::post('/signup/email', [SignupController::class, 'email']);
 Route::post('/signup/facebook', [SignupController::class, 'facebook']);

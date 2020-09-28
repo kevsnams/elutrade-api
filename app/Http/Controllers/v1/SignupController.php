@@ -20,8 +20,20 @@ class SignupController extends Controller
                 'required'
             ],
 
-            'password_repeat' => [
+            'password_confirm' => [
                 'required', 'same:password'
+            ],
+
+            'first_name' => [
+                'required', 'string', 'max:255'
+            ],
+
+            'middle_name' => [
+                'sometimes', 'nullable', 'required', 'string', 'max:255'
+            ],
+
+            'last_name' => [
+                'required', 'string', 'max:255'
             ],
 
             'agreed_terms' => [
@@ -32,6 +44,9 @@ class SignupController extends Controller
         $user = new User();
         $user->email = $request->email;
         $user->password = Hash::make($request->password);
+        $user->first_name = $request->first_name;
+        $user->middle_name = $request->input('middle_name', null);
+        $user->last_name = $request->last_name;
         $user->save();
 
         return ['success' => true];
