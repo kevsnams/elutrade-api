@@ -15,7 +15,7 @@
 | password | *String* | Required |
 
 ##### Response
-/!\ NOTE /!\: If this fails on validation, the message will only appear on 'email' parameter
+/!\\ NOTE /!\\: If this fails on validation, the message will only appear on 'email' parameter
 ```json
 {
 	"success": true,
@@ -89,3 +89,12 @@ The Response JSON of a failed validation follows this format:
 
   - `key` is the parameter name
   - `value` is an Array containing all the specific error messages
+  
+# Unathenticated Users
+For endpoints that require user authentication, a response will be sent with a 401 HTTP Status code and will always contain this JSON:
+
+```json
+{
+    "message": "Unauthenticated."
+}
+```
