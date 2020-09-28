@@ -47,6 +47,7 @@ class SignupController extends Controller
         $user->first_name = $request->first_name;
         $user->middle_name = $request->input('middle_name', null);
         $user->last_name = $request->last_name;
+        $user->email_verified_at = now();
         $user->save();
 
         return ['success' => true];
