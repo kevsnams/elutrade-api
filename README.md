@@ -60,7 +60,7 @@
 
 ## Transactions
 ### `POST` api/v1/transactions
-Creates a transaction
+Creates a transaction. Must be authenticated to create a transaction.
 
 ##### Request Parameters
 | Parameter | Data Type ||
