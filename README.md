@@ -10,14 +10,16 @@
 
 | Parameter | Data Type ||
 | ------------ | ------------ | ------------ |
-| email | *String* | Max Length: 255 |
-| password | *String* |
+| email | *String* | Required, Max Length: 255 |
+| device_name | *String* | Required, Max Length: 255 |
+| password | *String* | Required |
 
 ##### Response
+/!\ NOTE /!\: If this fails on validation, the message will only appear on 'email' parameter
 ```json
 {
 	"success": true,
-	"auth_token": "soMe_ToK3n_$tR1ng_h3rE"
+	"access_token": "soMe_ToK3n_$tR1ng_h3rE"
 }
 ```
 
