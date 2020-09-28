@@ -5,6 +5,8 @@
 #### NOTE: A successful API call will be sent with a 200 HTTP status code.
 
 ----
+
+## Signup and Authentication
 ### `POST` **api/v1/auth**
 ##### Request Parameters
 
@@ -56,8 +58,30 @@
 }
 ```
 
+## Transactions
+### `POST` api/v1/transactions
+Creates a transaction
 
-   
+##### Request Parameters
+| Parameter | Data Type ||
+| ------------ | ------------ | ------------ |
+| buyer | Integer/Null | Should be present but can be null (no buyer). If `buyer` is an Integer, then it will look for the User.id |
+
+##### Response
+```json
+{
+	"success": true,
+    "transaction": {
+        "id": "TRANSACTION_ID",
+        "seller": "JSON_OBJECT_THAT_CONTAINS_SELLER_INFORMATION",
+        "buyer": "NULL_OR_JSON_OBJECT_THAT_CONTAINS_BUYER_INFORMATION",
+        "amount": "TRANSACTION_AMOUNT",
+        "status": "TRANSACTION_STATUS_CODE",
+        "created_at": "WHEN_THE_TRANSACTION_IS_CREATED",
+        "updated_at": "WHEN_THE_TRANSACTION_WAS_LAST_UPDATED"
+    }
+}
+```
    
 # Validation Errors
 All API endpoints goes through a validation process where all inputs are being checked.
