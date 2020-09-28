@@ -116,7 +116,7 @@ The Response JSON of a failed validation follows this format:
   - `value` is an Array containing all the specific error messages
   
 # Unathenticated Users
-For endpoints that require user authentication, a response will be sent with a 401 HTTP Status code and will always contain this JSON:
+For endpoints that require user authentication, a response will be sent with a 401 HTTP Status code IF the user is unathorized and will always contain this JSON:
 
 ```json
 {
