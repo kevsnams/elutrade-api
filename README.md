@@ -31,7 +31,7 @@ Fetches the current authenticated user. Must be authenticated to fetch data.
 No Request Parameters
 
 ##### Response
-```json
+```javascript
 {
     "success": true,
     "user": {
