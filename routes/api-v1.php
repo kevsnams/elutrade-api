@@ -19,9 +19,10 @@ Route::post('/signup/email', [SignupController::class, 'email']);
 Route::post('/signup/facebook', [SignupController::class, 'facebook']);
 Route::post('/signup/google', [SignupController::class, 'google']);
 
+Route::apiResource('transactions', TransactionController::class);
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/auth/user', [AuthController::class, 'user']);
-    Route::apiResource('transactions', TransactionController::class, ['except' => 'show']);
 });
 
 /*

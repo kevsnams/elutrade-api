@@ -12,6 +12,11 @@ use Illuminate\Validation\Rule;
 
 class TransactionController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:sanctum')->except('show');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -66,22 +71,18 @@ class TransactionController extends Controller
      */
     public function show(Request $request, $id)
     {
-        $transaction = Transaction::find($id);
+        $transaction = Transaction::with('buyer', 'seller')->find($id);
 
-        if ($transaction) {
-            return response()->json([
-                'success' => true,
-                'transaction' => null
-            ]);
+        if (Auth::check() && !is_null($request->buyer) && !in_array($request->user()->id, [$transaction->buyer->id, $transaction->seller->id])) {
+            $transaction = null;
+        } else if (!is_null($transaction->buyer)) {
+            $transaction = null;
         }
 
-        if (Auth::check()) {
-            if (!is_null($transaction->buyer) && !in_array($request->user()->id, [$transaction->buyer->id, $transaction->seller->id])) {
-
-            }
-        }
-
-        return new TransactionResource($transaction);
+        return [
+            'success' => true,
+            'transaction' => $transaction
+        ];
     }
 
     /**
