@@ -31,4 +31,12 @@ class AuthController extends Controller
             'access_token' => $user->createToken($request->device_name)->plainTextToken
         ];
     }
+
+    public function user(Request $request)
+    {
+        return [
+            'success' => true,
+            'user' => $request->user()
+        ];
+    }
 }

@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Route;
  * ------------------------------------------------------------------------
  */
 
+
 Route::post('/auth', [AuthController::class, 'login']);
 
 Route::post('/signup/email', [SignupController::class, 'email']);
@@ -19,6 +20,7 @@ Route::post('/signup/facebook', [SignupController::class, 'facebook']);
 Route::post('/signup/google', [SignupController::class, 'google']);
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/auth/user', [AuthController::class, 'user']);
     Route::apiResource('transactions', TransactionController::class, ['except' => 'show']);
 });
 
