@@ -1,3 +1,6 @@
+# Introduction
+Run `php artisan db:seed` if you want to fill the database with dummy data
+
 # API Endpoints
 
 ----
@@ -95,6 +98,26 @@ Creates a transaction. Must be authenticated to create a transaction.
         "status": "TRANSACTION_STATUS_CODE",
         "created_at": "WHEN_THE_TRANSACTION_IS_CREATED",
         "updated_at": "WHEN_THE_TRANSACTION_WAS_LAST_UPDATED"
+    }
+}
+```
+
+### `GET` api/v1/transactions/{id}
+Fetches a single transaction by its {id}
+
+##### Request Parameters
+No Request Parameters
+
+##### Response
+Fetching a single transaction has two conditions before you can access the resource. These are:
+- If buyer is null, the transaction can be accessed both publicly and privately
+- If buyer is NOT NULL, only the seller and buyer can view the resource
+
+```javascript
+{
+    "success": true,
+    "transaction": {
+        /** null or transaction details (see "api/v1/transactions" endpoint for more details)  */
     }
 }
 ```
