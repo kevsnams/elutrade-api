@@ -25,6 +25,21 @@
 }
 ```
 
+### `GET` **api/v1/auth/user**
+Fetches the current authenticated user. Must be authenticated to fetch data.
+##### Request Parameters
+No Request Parameters
+
+##### Response
+```json
+{
+    "success": true,
+    "user": {
+        /* user info here */
+    }
+}
+```
+
 ### `POST` api/v1/signup
 ##### Request Parameters
 
