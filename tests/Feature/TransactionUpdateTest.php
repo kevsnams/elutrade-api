@@ -145,6 +145,18 @@ class TransactionUpdateTest extends TestCase
 
     public function testBuyerUpdatingShouldFail()
     {
-        /** TODO */
+        $transaction = Transaction::factory()->create();
+
+        Sanctum::actingAs($transaction->buyer, ['*']);
+
+        $response = $this->putJson('api/v1/transactions/'. $transaction->id, [
+            'amount' => 420.69
+        ]);
+        $decoded = $response->decodeResponseJson()->json();
+
+        $response->assertStatus(401);
+        $response->assertJson([
+            'message' => 'Unauthenticated.'
+        ], true);
     }
 }

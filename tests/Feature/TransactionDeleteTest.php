@@ -67,6 +67,15 @@ class TransactionDeleteTest extends TestCase
 
     public function testBuyerDeleteShouldFail()
     {
-        /** TODO */
+        $transaction = Transaction::factory()->create();
+
+        Sanctum::actingAs($transaction->buyer, ['*']);
+
+        $response = $this->deleteJson('api/v1/transactions/'. $transaction->id);
+        $decoded = $response->decodeResponseJson()->json();
+
+        $response->assertStatus(401);
+        $this->assertArrayHasKey('message', $decoded);
+        $this->assertEquals('Unauthenticated.', $decoded['message']);
     }
 }
