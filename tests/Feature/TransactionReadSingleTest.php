@@ -9,7 +9,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
-class TransactionReadOneTest extends TestCase
+class TransactionReadSingleTest extends TestCase
 {
     use RefreshDatabase;
 

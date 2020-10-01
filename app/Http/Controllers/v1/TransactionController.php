@@ -24,8 +24,26 @@ class TransactionController extends Controller
      */
     public function index(Request $request)
     {
-        $transactions = Transaction::ofSeller($request->user()->id)->get();
-        return new TransactionsResource($transactions);
+        $request->validate([
+            'per_page' => [
+                'sometimes', 'numeric'
+            ],
+
+            'with' => [
+                'sometimes', 'array', 'in:buyer,seller'
+            ]
+        ]);
+
+        $transactions = Transaction::ofSeller($request->user()->id)
+            ->when($request->input('with', ['buyer']), function ($query, $with) {
+                return $query->with($with);
+            })
+            ->paginate($request->input('per_page', 10));
+
+        return [
+            'success' => true,
+            'transactions' => $transactions
+        ];
     }
 
     /**
