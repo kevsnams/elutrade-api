@@ -84,7 +84,7 @@ Creates a transaction. Must be authenticated to create a transaction.
 | Parameter | Data Type ||
 | ------------ | ------------ | ------------ |
 | buyer | Integer/Null | Should be present but can be null (no buyer). If `buyer` is an Integer, then it will look for the User.id |
-| amount | Numeric | Required, Numeric (e.g. 200/200.69) 
+| amount | Numeric | Required, Numeric (e.g. 200/200.69), Min: 200 |
 
 ##### Response
 ```json
@@ -98,6 +98,32 @@ Creates a transaction. Must be authenticated to create a transaction.
         "status": "TRANSACTION_STATUS_CODE",
         "created_at": "WHEN_THE_TRANSACTION_IS_CREATED",
         "updated_at": "WHEN_THE_TRANSACTION_WAS_LAST_UPDATED"
+    }
+}
+```
+
+### `PUT` api/v1/transactions/{id}
+Updates a transaction. Where {id} is the transaction ID. *Requires authorization to update*.
+Parameters are optional although if present, it will run validation process.
+
+##### Request Parameters
+There are two conditions before updating `buyer`:
+1. If `buyer` is NULL, you can update it.
+2. If `buyer` is NOT NULL (means it already has a buyer), you CANNOT update it.
+
+| Parameter | Data Type ||
+| ------------ | ------------ | ------------ |
+| buyer | Null/Integer | Optional. If Integer, it should be the user id of buyer |
+| amount | Numeric | Optional. Min: 200 |
+
+##### Response
+It's the same as `GET api/v1/transactions/{id}` but returns the updated values
+
+```javascript
+{
+    "success": true,
+    "transaction": {
+        /** null or transaction details (see "api/v1/transactions" endpoint for more details)  */
     }
 }
 ```
