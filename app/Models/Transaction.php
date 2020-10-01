@@ -32,4 +32,9 @@ class Transaction extends Model
     {
         return $query->where('seller_user_id', $id);
     }
+
+    public function scopeOfBuyer($query, $id)
+    {
+        return $query->where('buyer_user_id', $id);
+    }
 }
