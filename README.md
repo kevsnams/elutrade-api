@@ -102,6 +102,110 @@ Creates a transaction. Must be authenticated to create a transaction.
 }
 ```
 
+### `GET` api/v1/transactions
+Fetches all transactions of seller. Must be authenticated to return resources.
+
+
+##### Request Parameters
+| Parameter | Data Type ||
+| ------------ | ------------ | ------------ |
+| per_page | Integer | Optional. Number of transactions to display per page |
+| with | Array | Default: 'buyer'. Available: ['buyer', 'seller'] |
+
+##### Response
+By default, parameter `with` will be set to "buyer" and will be appended to each transaction. You can also use "seller" or use both.
+
+```javascript
+{
+    "success": true,
+    "transactions": {
+        "current_page": 1,
+        "data": [
+            {
+                "id": 30,
+                "amount": "920686.00",
+                "status": 0,
+                "created_at": "2020-10-01T14:11:30.000000Z",
+                "updated_at": "2020-10-01T14:11:30.000000Z",
+                "buyer": {
+                    "id": 45,
+                    "email": "hhodkiewicz@example.com",
+                    "first_name": "Ellie",
+                    "middle_name": "Ullrich",
+                    "last_name": "Ledner"
+                }
+            },
+            {
+                "id": 31,
+                "amount": "697644.00",
+                "status": 0,
+                "created_at": "2020-10-01T14:11:30.000000Z",
+                "updated_at": "2020-10-01T14:11:30.000000Z",
+                "buyer": {
+                    "id": 46,
+                    "email": "ludie87@example.com",
+                    "first_name": "Aurelia",
+                    "middle_name": "Schmitt",
+                    "last_name": "Rogahn"
+                }
+            },
+            {
+                "id": 32,
+                "amount": "391601.00",
+                "status": 0,
+                "created_at": "2020-10-01T14:11:30.000000Z",
+                "updated_at": "2020-10-01T14:11:30.000000Z",
+                "buyer": {
+                    "id": 47,
+                    "email": "shanahan.paul@example.net",
+                    "first_name": "Sierra",
+                    "middle_name": "Brekke",
+                    "last_name": "Grady"
+                }
+            },
+            /** . . . */
+        ],
+        "first_page_url": "http://127.0.0.1:8000/api/v1/transactions?page=1",
+        "from": 1,
+        "last_page": 3,
+        "last_page_url": "http://127.0.0.1:8000/api/v1/transactions?page=3",
+        "links": [
+            {
+                "url": null,
+                "label": "Previous",
+                "active": false
+            },
+            {
+                "url": "http://127.0.0.1:8000/api/v1/transactions?page=1",
+                "label": 1,
+                "active": true
+            },
+            {
+                "url": "http://127.0.0.1:8000/api/v1/transactions?page=2",
+                "label": 2,
+                "active": false
+            },
+            {
+                "url": "http://127.0.0.1:8000/api/v1/transactions?page=3",
+                "label": 3,
+                "active": false
+            },
+            {
+                "url": "http://127.0.0.1:8000/api/v1/transactions?page=2",
+                "label": "Next",
+                "active": false
+            }
+        ],
+        "next_page_url": "http://127.0.0.1:8000/api/v1/transactions?page=2",
+        "path": "http://127.0.0.1:8000/api/v1/transactions",
+        "per_page": 10,
+        "prev_page_url": null,
+        "to": 10,
+        "total": 30
+    }
+}
+```
+
 ### `GET` api/v1/transactions/{id}
 Fetches a single transaction by its {id}
 
