@@ -77,6 +77,19 @@ No Request Parameters
 ```
 
 ## Transactions
+### `DELETE` api/v1/transactions/{id}
+Deletes a transaction. Where {id} is the transaction ID. *Requires authorization to update*.
+
+##### Request Parameters
+*No Request Parameters*/
+
+##### Response
+```javascript
+{
+    "success": true
+}
+```
+
 ### `POST` api/v1/transactions
 Creates a transaction. Must be authenticated to create a transaction.
 
