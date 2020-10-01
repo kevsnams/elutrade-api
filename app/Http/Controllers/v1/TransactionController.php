@@ -6,9 +6,11 @@ use App\Http\Resources\Transaction as TransactionResource;
 use App\Http\Resources\Transactions as TransactionsResource;
 use App\Http\Controllers\Controller;
 use App\Models\Transaction;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class TransactionController extends Controller
 {
@@ -62,7 +64,7 @@ class TransactionController extends Controller
             ],
 
             'amount' => [
-                'required', 'numeric', 'min:0'
+                'required', 'numeric', 'min:200'
             ]
         ]);
 
@@ -112,51 +114,39 @@ class TransactionController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $transaction = Transaction::with(['buyer', 'seller'])
+            ->ofSeller($request->user()->id)
+            ->where('id', $id)
+            ->first();
+
         $request->validate([
             'buyer' => [
-                'sometimes',
-                'nullable',
-                'required',
-                'exists:users,id'
-            ],
-
-            'status' => [
-                'sometimes',
-                'required',
-                Rule::in([
-                    Transaction::STATUS_ACTIVE,
-                    Transaction::STATUS_CLOSED,
-                    Transaction::STATUS_DRAFT,
-                    Transaction::STATUS_PENDING
-                ])
+                'sometimes', 'nullable', 'integer', 'exists:users,id'
             ],
 
             'amount' => [
-                'sometimes',
-                'required',
-                'numeric'
+                'sometimes', 'numeric', 'min:200'
             ]
         ]);
 
-        $transaction = Transaction::ofSeller($request->user()->id)->first();
-
-        // [ W I P ]
-        if (is_null($transaction)) {
-            return response()->json([
-                'success' => false,
-                'transaction' => []
-            ], 404);
+        if (!$transaction) {
+            throw new AuthenticationException();
         }
 
-        if (is_null($transaction->buyer) && $request->has('buyer')) {
+        $hasBuyer = !is_null($transaction->buyer);
+        $filledBuyer = filled($request->buyer);
+
+        if ($hasBuyer && $filledBuyer) {
+            throw ValidationException::withMessages([
+                'buyer' => ['This transaction already has a buyer']
+            ]);
+        }
+
+        if (!$hasBuyer && $filledBuyer) {
             $transaction->buyer_user_id = $request->buyer;
         }
 
-        if ($request->has('status')) {
-            $transaction->status = $request->status;
-        }
-
-        if ($request->has('amount')) {
+        if (filled($request->amount)) {
             $transaction->amount = round($request->amount, 2);
         }
 
@@ -164,7 +154,10 @@ class TransactionController extends Controller
             $transaction->save();
         }
 
-        return new TransactionResource($transaction);
+        return [
+            'success' => true,
+            'transaction' => $transaction
+        ];
     }
 
     /**
