@@ -34,10 +34,6 @@ class SignupController extends Controller
 
             'last_name' => [
                 'required', 'string', 'max:255'
-            ],
-
-            'agreed_terms' => [
-                'required', 'accepted'
             ]
         ]);
 

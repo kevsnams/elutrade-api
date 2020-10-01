@@ -18,7 +18,7 @@ class EmailSignupTest extends TestCase
 
         $response->assertStatus(422);
         $response->assertJsonValidationErrors([
-            'email', 'password', 'password_confirm', 'first_name', 'last_name', 'agreed_terms'
+            'email', 'password', 'password_confirm', 'first_name', 'last_name'
         ]);
     }
 
@@ -31,8 +31,7 @@ class EmailSignupTest extends TestCase
             'password' => 'password',
             'password_confirm' => 'password',
             'first_name' => $this->faker->firstName,
-            'last_name' => $this->faker->lastName,
-            'agreed_terms' => true
+            'last_name' => $this->faker->lastName
         ]);
 
         $response->assertStatus(422);
@@ -48,8 +47,7 @@ class EmailSignupTest extends TestCase
             'password' => 'password',
             'password_confirm' => 'wordpass',
             'first_name' => $this->faker->firstName,
-            'last_name' => $this->faker->lastName,
-            'agreed_terms' => true
+            'last_name' => $this->faker->lastName
         ]);
 
         $response->assertStatus(422);
@@ -65,8 +63,7 @@ class EmailSignupTest extends TestCase
             'password' => 'password',
             'password_confirm' => 'wordpass',
             'first_name' => $this->faker->firstName,
-            'last_name' => $this->faker->lastName,
-            'agreed_terms' => true
+            'last_name' => $this->faker->lastName
         ]);
 
         $response->assertStatus(422);
@@ -88,8 +85,7 @@ class EmailSignupTest extends TestCase
             $newUser,
             [
                 'password' => 'password',
-                'password_confirm' => 'password',
-                'agreed_terms' => true
+                'password_confirm' => 'password'
             ]
         ));
 
@@ -97,25 +93,5 @@ class EmailSignupTest extends TestCase
         $response->assertJson(['success' => true], true);
 
         $this->assertDatabaseHas('users', $newUser);
-    }
-
-    public function testDisagreedTerms()
-    {
-        $response = $this->postJson('api/v1/signup/email', array_merge(
-            [
-                'email' => $this->faker->safeEmail,
-                'password' => 'password',
-                'password_confirm' => 'password',
-                'first_name' => $this->faker->firstName,
-                'middle_name' => $this->faker->lastName,
-                'last_name' => $this->faker->lastName,
-                'agreed_terms' => false
-            ]
-        ));
-
-        $response->assertStatus(422);
-        $response->assertJsonValidationErrors([
-            'agreed_terms'
-        ]);
     }
 }
