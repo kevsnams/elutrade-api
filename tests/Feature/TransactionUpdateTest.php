@@ -142,4 +142,9 @@ class TransactionUpdateTest extends TestCase
             'amount'
         ]);
     }
+
+    public function testBuyerUpdatingShouldFail()
+    {
+        /** TODO */
+    }
 }

@@ -64,4 +64,9 @@ class TransactionDeleteTest extends TestCase
         $this->assertArrayHasKey('message', $decoded);
         $this->assertEquals('Unauthenticated.', $decoded['message']);
     }
+
+    public function testBuyerDeleteShouldFail()
+    {
+        /** TODO */
+    }
 }
