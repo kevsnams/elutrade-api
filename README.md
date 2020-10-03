@@ -43,14 +43,16 @@ No Request Parameters
 }
 ```
 
-### `POST` api/v1/signup
+### `POST` api/v1/signup/email
+For email signup
+
 ##### Request Parameters
 
 | Parameter | Data Type ||
 | ------------ | ------------ | ------------ |
 | email | *String* | Required, Max Length:255 |
 | first_name | *String* | Required, Max Length: 255 |
-| middle_name | *String* | Required, Max Length: 255 |
+| middle_name | *String* | Optional. Max Length: 255 |
 | last_name | *String* | Required, Max Length: 255 |
 | password | *String* | Required |
 | password_confirm | *String* | Required, Same: password |
