@@ -28,6 +28,16 @@ class Transaction extends Model
         return $this->belongsTo('App\Models\User', 'buyer_user_id');
     }
 
+    public function payment()
+    {
+        return $this->belongsTo('App\Model\TransactionPayment');
+    }
+
+    public function logs()
+    {
+        return $this->hasMany('App\Models\TransactionLog');
+    }
+
     public function scopeOfSeller($query, $id)
     {
         return $query->where('seller_user_id', $id);
