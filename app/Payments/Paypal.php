@@ -11,6 +11,7 @@ use PayPalCheckoutSdk\Core\SandboxEnvironment;
 use PayPalCheckoutSdk\Orders\OrdersCaptureRequest;
 use PayPalCheckoutSdk\Orders\OrdersCreateRequest;
 use PayPalCheckoutSdk\Orders\OrdersGetRequest;
+use PayPalHttp\HttpException as PayPalHttpHttpException;
 
 class Paypal extends Payment
 {
@@ -26,85 +27,57 @@ class Paypal extends Payment
             new ProductionEnvironment(env('PAYPAL_CLIENT_ID'), env('PAYPAL_SECRET'));
     }
 
-    public static function createOrder(Transaction $transaction, $logErrorResponse = true)
+    public static function createOrder(Transaction $transaction)
     {
-        self::checkTransaction($transaction, TransactionPayment::MODE_PAYPAL);
-
         $request = new OrdersCreateRequest();
         $request->prefer('return=representation');
         $request->body = [
             'intent' => 'CAPTURE',
-            'application_context' => [
-                'return_url' => route('paypal.return_url'),
-                'cancel_url' => route('paypal.cancel_url')
-            ],
-
             'purchase_units' => [
                 [
                     'amount' => [
                         'currency_code' => 'PHP',
                         'value' => round($transaction->amount, 2)
                     ],
-                    'description' => "Payment for transaction (#{$transaction->id}) - {env('APP_NAME')}.COM",
-                    'invoice_id' => "{$transaction->id}-{$transaction->buyer_user_id}"
+                    'description' => "Payment for transaction [{$transaction->id}] - ". env('APP_NAME') .".COM",
+                    'invoice_id' => "{$transaction->id}-{$transaction->buyer_user_id}-". uniqid()
                 ]
             ]
         ];
 
-        $response = self::client()->execute($request);
+        $response = null;
 
-        if ($response->statusCode === 200 || $response->statusCode === 201) {
-            return $response;
-        } else if ($logErrorResponse) {
-            self::log(
-                $transaction,
-                "Paypal Response [createOrder][{$response->statusCode}]",
-                json_encode($response->result)
-            );
-        }
+        try {
+            $response = self::client()->execute($request);
+        } catch (PayPalHttpHttpException $e) {}
 
-        return false;
+        return $response;
     }
 
-    public static function getOrder(Transaction $transaction, $logErrorResponse = true)
+    public static function getOrder($paypalOrderId)
     {
-        self::checkTransaction($transaction, TransactionPayment::MODE_PAYPAL);
+        $response = null;
 
-        $response = self::client()->execute(
-            new OrdersGetRequest($transaction->paypal_order_id)
-        );
-
-        if ($response->statusCode === 200 || $response->statusCode === 201) {
-            return $response;
-        } else if ($logErrorResponse) {
-            self::log(
-                $transaction,
-                "Paypal Response [getOrder][{$response->statusCode}]",
-                json_encode($response->result)
+        try {
+            $response = self::client()->execute(
+                new OrdersGetRequest($paypalOrderId)
             );
-        }
+        } catch (PayPalHttpClient $e) {}
 
-        return false;
+        return $response;
     }
 
-    public static function captureOrder(Transaction $transaction, $logErrorResponse = true)
+    public static function captureOrder($paypalOrderId)
     {
-        self::checkTransaction($transaction, TransactionPayment::MODE_PAYPAL);
 
-        $response = self::client()->execute(
-            new OrdersCaptureRequest($transaction->paypal_order_id)
-        );
+        $response = null;
 
-        if ($response->statusCode === 200 || $response->statusCode === 201) {
-            return $response;
-        } else if ($logErrorResponse) {
-            self::log(
-                $transaction,
-                "Paypal Response [captureOrder][{$response->statusCode}]",
-                json_encode($response->result)
+        try {
+            $response = self::client()->execute(
+                new OrdersCaptureRequest($paypalOrderId)
             );
-        }
+        } catch (PayPalHttpClient $e) {}
 
-        return false;
+        return $response;
     }
 }

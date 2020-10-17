@@ -9,6 +9,10 @@ class TransactionLog extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'transaction_id', 'description', 'json_details'
+    ];
+
     public function transaction()
     {
         return $this->belongsTo('App\Models\Transaction');

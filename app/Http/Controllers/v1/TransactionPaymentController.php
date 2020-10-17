@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Transaction;
 use App\Models\TransactionPayment;
 use App\Payments\Paypal;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class TransactionPaymentController extends Controller
 {
@@ -15,9 +17,14 @@ class TransactionPaymentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $payments = TransactionPayment::ofBuyer($request->user()->id)->get();
+
+        /**
+         * @TODO Paginate this shit
+         */
+        return $payments;
     }
 
     /**
@@ -28,46 +35,7 @@ class TransactionPaymentController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'transaction_id' => [
-                'required', 'integer', 'exists:App\Models\Transaction,id'
-            ],
 
-            'mode' => [
-                'required', 'string', 'in:paypal'
-            ]
-        ]);
-
-        $transaction = Transaction::ofBuyer($request->user()->id)->first($request->transaction_id);
-
-        if ($request->mode === 'paypal') {
-            if ($response = Paypal::createOrder($transaction)) {
-                $payment = new TransactionPayment();
-
-                $payment->mode = TransactionPayment::MODE_PAYPAL;
-                $payment->paypal_order_id = $response['result']['id'];
-                $payment->paypal_response_json = json_encode($response);
-                $payment->transaction_id = $transaction->id;
-
-                $payment->save();
-                $payment->refresh();
-
-                return [
-                    'success' => true,
-                    'transaction_payment' => $payment
-                ];
-            } else {
-                return [
-                    'success' => false,
-                    'message' => 'Unable to process PayPal for this transaction'
-                ];
-            }
-        }
-
-        return [
-            'success' => false,
-            'message' => 'Unable to process payment. Payment mode not found'
-        ];
     }
 
     /**
@@ -78,14 +46,6 @@ class TransactionPaymentController extends Controller
      */
     public function show(Request $request, $id)
     {
-        $payment = TransactionPayment::with('transaction')
-            ->ofBuyer($request->user()->id())
-            ->first($id);
-
-        return [
-            'success' => true,
-            'transaction_payment' => $payment
-        ];
     }
 
     /**
@@ -97,7 +57,6 @@ class TransactionPaymentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // @TODO NEXT!
     }
 
     /**

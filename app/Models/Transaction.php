@@ -30,7 +30,7 @@ class Transaction extends Model
 
     public function payment()
     {
-        return $this->belongsTo('App\Model\TransactionPayment');
+        return $this->hasOne('App\Models\TransactionPayment');
     }
 
     public function logs()

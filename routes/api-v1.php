@@ -1,10 +1,10 @@
 <?php
 
 use App\Http\Controllers\v1\AuthController;
+use App\Http\Controllers\v1\Payment\PaypalController;
 use App\Http\Controllers\v1\SignupController;
 use App\Http\Controllers\v1\TransactionController;
 use App\Http\Controllers\v1\TransactionPaymentController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /**
@@ -24,22 +24,13 @@ Route::apiResource('transactions', TransactionController::class);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/auth/user', [AuthController::class, 'user']);
-});
+    Route::apiResource('transaction/payments', TransactionPaymentController::class);
 
-Route::post('/paypal', [TransactionPaymentController::class, 'store']);
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
-
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+    Route::prefix('/transaction/payment/paypal')->group(function () {
+        Route::post('/create', [PaypalController::class, 'postCreate']);
+        Route::post('/capture', [PaypalController::class, 'postCapture']);
+        Route::post('/cancel', [PaypalController::class, 'postCancel']);
+    });
 });
 

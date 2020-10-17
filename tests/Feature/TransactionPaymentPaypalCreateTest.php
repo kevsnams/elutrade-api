@@ -8,7 +8,5 @@ use Tests\TestCase;
 
 class TransactionPaymentCreateTest extends TestCase
 {
-    /**
-     * @TODO Write tests for TransactionPaymentController
-     */
+
 }

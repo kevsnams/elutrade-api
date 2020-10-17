@@ -25,7 +25,7 @@ class TransactionFactory extends Factory
         return [
             'seller_user_id' => User::factory(),
             'buyer_user_id' => User::factory(),
-            'amount' => round($this->faker->numberBetween(0, 1000000), 2),
+            'amount' => round($this->faker->numberBetween(1, 10000), 2),
             'status' => 0
         ];
     }
