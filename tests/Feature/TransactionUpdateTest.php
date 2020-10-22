@@ -25,7 +25,7 @@ class TransactionUpdateTest extends TestCase
 
         Sanctum::actingAs($transaction->seller, ['*']);
 
-        $response = $this->putJson('api/v1/transactions/'. $transaction->id, [
+        $response = $this->putJson('api/v1/transactions/'. $transaction->hash_id, [
             'buyer' => $buyer->id
         ]);
 
@@ -44,7 +44,7 @@ class TransactionUpdateTest extends TestCase
 
         Sanctum::actingAs($transaction->seller, ['*']);
 
-        $response = $this->putJson('api/v1/transactions/'. $transaction->id, [
+        $response = $this->putJson('api/v1/transactions/'. $transaction->hash_id, [
             'buyer' => $buyer->id
         ]);
 
@@ -63,7 +63,7 @@ class TransactionUpdateTest extends TestCase
 
         Sanctum::actingAs($notSeller, ['*']);
 
-        $response = $this->putJson('api/v1/transactions/'. $transaction->id, [
+        $response = $this->putJson('api/v1/transactions/'. $transaction->hash_id, [
             'buyer' => $buyer->id
         ]);
 
@@ -82,7 +82,7 @@ class TransactionUpdateTest extends TestCase
 
         Sanctum::actingAs($transaction->seller, ['*']);
 
-        $response = $this->putJson('api/v1/transactions/'. $transaction->id, [
+        $response = $this->putJson('api/v1/transactions/'. $transaction->hash_id, [
             'buyer' => '9999'
         ]);
 
@@ -98,7 +98,7 @@ class TransactionUpdateTest extends TestCase
 
         Sanctum::actingAs($transaction->seller, ['*']);
 
-        $response = $this->putJson('api/v1/transactions/'. $transaction->id, []);
+        $response = $this->putJson('api/v1/transactions/'. $transaction->hash_id, []);
         $decoded = $response->decodeResponseJson()->json();
 
         $response->assertSuccessful();
@@ -112,7 +112,7 @@ class TransactionUpdateTest extends TestCase
 
         Sanctum::actingAs($transaction->seller, ['*']);
 
-        $response = $this->putJson('api/v1/transactions/'. $transaction->id, [
+        $response = $this->putJson('api/v1/transactions/'. $transaction->hash_id, [
             'amount' => 420.69
         ]);
         $decoded = $response->decodeResponseJson()->json();
@@ -132,7 +132,7 @@ class TransactionUpdateTest extends TestCase
 
         Sanctum::actingAs($transaction->seller, ['*']);
 
-        $response = $this->putJson('api/v1/transactions/'. $transaction->id, [
+        $response = $this->putJson('api/v1/transactions/'. $transaction->hash_id, [
             'amount' => '420.x9'
         ]);
         $decoded = $response->decodeResponseJson()->json();
@@ -149,7 +149,7 @@ class TransactionUpdateTest extends TestCase
 
         Sanctum::actingAs($transaction->buyer, ['*']);
 
-        $response = $this->putJson('api/v1/transactions/'. $transaction->id, [
+        $response = $this->putJson('api/v1/transactions/'. $transaction->hash_id, [
             'amount' => 420.69
         ]);
         $decoded = $response->decodeResponseJson()->json();

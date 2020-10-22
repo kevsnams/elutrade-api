@@ -28,6 +28,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::apiResource('transaction/payments', TransactionPaymentController::class);
 
+    Route::get('transaction/{id}/payments', [TransactionPaymentController::class, 'ofTransaction']);
+
 
     Route::prefix('/transaction/payment/paypal')->group(function () {
         Route::post('/create', [PaypalController::class, 'postCreate']);

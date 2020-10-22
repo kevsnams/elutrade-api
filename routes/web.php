@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DevController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -20,4 +21,8 @@ Route::get('/', function () {
 
 Route::get('/test-paypal', function () {
     return view('test-paypal');
+});
+
+Route::prefix('dev')->group(function() {
+    Route::get('playground', [DevController::class, 'playground'])->name('dev.playground');
 });

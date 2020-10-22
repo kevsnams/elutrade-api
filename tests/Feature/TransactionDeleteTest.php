@@ -14,7 +14,7 @@ class TransactionDeleteTest extends TestCase
     public function testUnauthorizedDeleteShouldFail()
     {
         $transaction = Transaction::factory()->create();
-        $response = $this->deleteJson('api/v1/transactions/'. $transaction->id);
+        $response = $this->deleteJson('api/v1/transactions/'. $transaction->hash_id);
         $decoded = $response->decodeResponseJson()->json();
 
         $response->assertStatus(401);
@@ -28,7 +28,7 @@ class TransactionDeleteTest extends TestCase
 
         Sanctum::actingAs($transaction->seller, ['*']);
 
-        $response = $this->deleteJson('api/v1/transactions/'. $transaction->id);
+        $response = $this->deleteJson('api/v1/transactions/'. $transaction->hash_id);
         $decoded = $response->decodeResponseJson()->json();
 
         $response->assertSuccessful();
@@ -57,7 +57,7 @@ class TransactionDeleteTest extends TestCase
 
         Sanctum::actingAs($differentOwner, ['*']);
 
-        $response = $this->deleteJson('api/v1/transactions/'. $transaction->id);
+        $response = $this->deleteJson('api/v1/transactions/'. $transaction->hash_id);
         $decoded = $response->decodeResponseJson()->json();
 
         $response->assertStatus(401);
@@ -71,7 +71,7 @@ class TransactionDeleteTest extends TestCase
 
         Sanctum::actingAs($transaction->buyer, ['*']);
 
-        $response = $this->deleteJson('api/v1/transactions/'. $transaction->id);
+        $response = $this->deleteJson('api/v1/transactions/'. $transaction->hash_id);
         $decoded = $response->decodeResponseJson()->json();
 
         $response->assertStatus(401);

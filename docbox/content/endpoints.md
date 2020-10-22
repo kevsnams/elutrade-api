@@ -129,6 +129,7 @@ axios.post('{BASE_URL}/api/v1/auth/user)
 ```
 
 ## Transactions
+**NOTE** Instead of `id`, use `hash_id` to identify a single transaction.
 
 ### Create
 `auth: required`
@@ -179,7 +180,14 @@ Fetches all transactions of the seller. The response JSON is paginated.
 Property | Description
 ---|---
 `per_page` | (Optional) Number of transactions to return per page. Default: 10
-`with` | (Optional) This property adds a property on transactions. Available values are 'buyer' and 'seller'. Default: \['buyer'\]
+`with` | (Optional) This attaches an object to transaction response. Available values are 'buyer', 'seller' and 'payment'. Default: \['buyer'\]
+
+- `buyer` The buyer object that is associated to the transaction
+- `seller` The seller object that is associated to the transaction
+- `payment` The payment object that is associated to the transaction
+
+**NOTE** Returns `null` if nothing is associated
+
 
 ```javascript
 import axios from 'axios';
@@ -195,8 +203,6 @@ axios.get(`{BASE_URL}/api/v1/transactions${props}`);
 ```
 
 **Response**
-
-By default, parameter with will be set to `buyer` and will be appended to each transaction. You can also use `seller` or both.
 
 ```
 {
@@ -281,16 +287,16 @@ By default, parameter with will be set to `buyer` and will be appended to each t
 
 ### Read Single
 ```endpoint
-GET apit/v1/transactions/{id}
+GET apit/v1/transactions/{hash_id}
 ```
 
-Fetches a single transaction by its {id}  
+Fetches a single transaction by its {hash_id}  
 This endpoint does not require any request body
 
 ```javascript
 import axios from 'axios';
 
-axios.get('{BASE_URL}/api/v1/transactions/1234').then((response) {
+axios.get('{BASE_URL}/api/v1/transactions/{hash_id}').then((response) {
     console.log(response.data.transaction);
 });
 ```
@@ -313,15 +319,15 @@ Fetching a single transaction has two conditions before you can access the resou
 ### Update
 `auth: required`
 ```endpoint
-PUT/PATCH api/v1/transactions/{id}
+PUT/PATCH api/v1/transactions/{hash_id}
 ```
 
-Updates a transaction. Where {id} is the transaction ID. Parameters are optional although if present, it will run validation process.
+Updates a transaction. Where {hash_id} is the transaction ID. Parameters are optional although if present, it will run validation process.
 
 ```javascript
 import axios from 'axios';
 
-axios.put('{BASE_URL}/api/v1/transactions/{id}', {
+axios.put('{BASE_URL}/api/v1/transactions/{hash_id}', {
     // This only updates the amount
     amount: 123.45
 });
@@ -352,16 +358,16 @@ Property | Description
 ### Delete
 `auth: required`
 ```endpoint
-DELETE api/v1/transactions/{id}
+DELETE api/v1/transactions/{hash_id}
 ```
 
-Deletes a transaction. Where {id} is the transaction ID.
+Deletes a transaction. Where {hash_id} is the transaction ID.
 This endpoint does not require any request body.
 
 ```javascript
 import axios from 'axios';
 
-axios.delete('{BASE_URL}/api/v1/transactions/{id}');
+axios.delete('{BASE_URL}/api/v1/transactions/{hash_id}');
 ```
 
 **Response**

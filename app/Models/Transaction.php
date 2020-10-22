@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Mtvs\EloquentHashids\HasHashid;
+use Mtvs\EloquentHashids\HashidRouting;
 
 class Transaction extends Model
 {
-    use HasFactory;
+    use HasFactory, HasHashid, HashidRouting;
 
     const STATUS_DRAFT = 0;
     const STATUS_PENDING = 1;
@@ -15,7 +17,11 @@ class Transaction extends Model
     const STATUS_CLOSED = 3;
 
     protected $hidden = [
-        'seller_user_id', 'buyer_user_id'
+        'seller_user_id', 'buyer_user_id', 'id'
+    ];
+
+    protected $appends = [
+        'hash_id'
     ];
 
     public function seller()
@@ -46,5 +52,10 @@ class Transaction extends Model
     public function scopeOfBuyer($query, $id)
     {
         return $query->where('buyer_user_id', $id);
+    }
+
+    public function getHashIdAttribute()
+    {
+        return $this->hashid();
     }
 }

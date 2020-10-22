@@ -60,7 +60,7 @@
                 printLog('[3] Created order, opening Paypal popup...');
 
                 return axios.post('<?= url('api/v1/transaction/payment/paypal/create') ?>', {
-                    transaction_id: tmpTransactionId,
+                    transaction: tmpTransactionId,
                     mode: 'paypal'
                 }).then(function (response) {
                     printLog('[3.1] Successfully created order! Check dev console for response data');
@@ -76,7 +76,7 @@
                 printLog('[4] User paid!');
 
                 return axios.post('<?= url('api/v1/transaction/payment/paypal/capture') ?>', {
-                    transaction_id: tmpTransactionId,
+                    transaction: tmpTransactionId,
                     order_id: data.orderID
                 }).then(function (response) {
                     printLog('[4.1] Successful payment');
@@ -98,7 +98,7 @@
             onCancel: async function (data) {
                 printLog('[5] User cancelled! Sending cancel XHR.');
                 await axios.post('<?= url('api/v1/transaction/payment/paypal/cancel') ?>', {
-                    transaction_id: 1
+                    transaction: 1
                 });
                 printLog('[6] DONE!');
 

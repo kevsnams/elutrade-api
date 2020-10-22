@@ -39,8 +39,8 @@ class Paypal extends Payment
                         'currency_code' => 'PHP',
                         'value' => round($transaction->amount, 2)
                     ],
-                    'description' => "Payment for transaction [{$transaction->id}] - ". env('APP_NAME') .".COM",
-                    'invoice_id' => "{$transaction->id}-{$transaction->buyer_user_id}-". uniqid()
+                    'description' => "Payment for transaction [{$transaction->hash_id}] - ". env('APP_NAME') .".COM",
+                    'invoice_id' => "{$transaction->hash_id}-{$transaction->buyer_user_id}-". uniqid()
                 ]
             ]
         ];

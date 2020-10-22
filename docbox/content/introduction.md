@@ -16,3 +16,7 @@ All seeded users will have a password: `password`
 
 ## Server
 You can use `php artisan serve` or clone this repo to your apache server.  
+
+## Changelog
+
+- Transaction `id` is no longer used. Use `hash_id` from now on.

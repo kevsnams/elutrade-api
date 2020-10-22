@@ -14,6 +14,8 @@ use Illuminate\Validation\ValidationException;
 
 class TransactionController extends Controller
 {
+    private $indexPaginatePerPage = 10;
+
     public function __construct()
     {
         $this->middleware('auth:sanctum')->except('show');
@@ -32,7 +34,7 @@ class TransactionController extends Controller
             ],
 
             'with' => [
-                'sometimes', 'array', 'in:buyer,seller'
+                'sometimes', 'array', 'in:buyer,seller,payment'
             ]
         ]);
 
@@ -40,7 +42,7 @@ class TransactionController extends Controller
             ->when($request->input('with', ['buyer']), function ($query, $with) {
                 return $query->with($with);
             })
-            ->paginate($request->input('per_page', 10));
+            ->paginate($request->input('per_page', $this->indexPaginatePerPage));
 
         return [
             'success' => true,
@@ -91,8 +93,11 @@ class TransactionController extends Controller
      */
     public function show(Request $request, $id)
     {
-        $transaction = Transaction::with('buyer', 'seller')->find($id);
+        $transaction = Transaction::with('buyer', 'seller')->findByHashid($id);
 
+        /**
+         * @TODO Refactor this
+         */
         if (Auth::check() && !is_null($request->buyer) && !in_array($request->user()->id, [$transaction->buyer->id, $transaction->seller->id])) {
             $transaction = null;
         } else if (!is_null($transaction->buyer)) {
@@ -116,8 +121,7 @@ class TransactionController extends Controller
     {
         $transaction = Transaction::with(['buyer', 'seller'])
             ->ofSeller($request->user()->id)
-            ->where('id', $id)
-            ->first();
+            ->findByHashid($id);
 
         $request->validate([
             'buyer' => [
@@ -169,8 +173,7 @@ class TransactionController extends Controller
     public function destroy(Request $request, $id)
     {
         $transaction = Transaction::ofSeller($request->user()->id)
-            ->where('id', $id)
-            ->first();
+            ->findByHashid($id);
 
         if (!$transaction) {
             throw new AuthenticationException();

@@ -16,12 +16,12 @@ class PaypalController extends Controller
     public function postCreate(Request $request)
     {
         $request->validate([
-            'transaction_id' => [
-                'required', 'integer', 'exists:App\Models\Transaction,id'
+            'transaction' => [
+                'required', 'string'
             ]
         ]);
 
-        $transaction = Transaction::ofBuyer($request->user()->id)->find($request->transaction_id);
+        $transaction = Transaction::ofBuyer($request->user()->id)->findByHashid($request->transaction);
         $this->checkTransaction($transaction);
 
         $response = Paypal::createOrder($transaction);
@@ -47,8 +47,8 @@ class PaypalController extends Controller
     public function postCapture(Request $request)
     {
         $request->validate([
-            'transaction_id' => [
-                'required', 'integer', 'exists:App\Models\Transaction,id'
+            'transaction' => [
+                'required', 'string'
             ],
             'order_id' => [
                 'required', 'string'
@@ -57,7 +57,7 @@ class PaypalController extends Controller
 
         $transaction = Transaction::with('payment')
             ->ofBuyer($request->user()->id)
-            ->find($request->transaction_id);
+            ->findByHashid($request->transaction);
 
         $this->checkTransaction($transaction);
 
@@ -94,12 +94,12 @@ class PaypalController extends Controller
     public function postCancel(Request $request)
     {
         $request->validate([
-            'transaction_id' => [
-                'required', 'integer', 'exists:App\Models\Transaction,id'
+            'transaction' => [
+                'required', 'string'
             ]
         ]);
 
-        $transaction = Transaction::ofBuyer($request->user()->id)->find($request->transaction_id);
+        $transaction = Transaction::ofBuyer($request->user()->id)->findByHashid($request->transaction);
         $this->checkTransaction($transaction);
 
         TransactionLog::create([

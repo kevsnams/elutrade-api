@@ -21,7 +21,7 @@ class TransactionReadSingleTest extends TestCase
         $transaction->save();
         $transaction->refresh();
 
-        $response = $this->getJson('api/v1/transactions/'. $transaction->id);
+        $response = $this->getJson('api/v1/transactions/'. $transaction->hash_id);
 
         $response->assertSuccessful();
         $decoded = $response->decodeResponseJson()->json();
@@ -35,7 +35,7 @@ class TransactionReadSingleTest extends TestCase
     {
         $transaction = Transaction::factory()->create();
 
-        $response = $this->getJson('api/v1/transactions/'. $transaction->id);
+        $response = $this->getJson('api/v1/transactions/'. $transaction->hash_id);
 
         $response->assertSuccessful();
         $decoded = $response->decodeResponseJson()->json();
@@ -57,7 +57,7 @@ class TransactionReadSingleTest extends TestCase
         $transaction->save();
         $transaction->refresh();
 
-        $response = $this->getJson('api/v1/transactions/'. $transaction->id);
+        $response = $this->getJson('api/v1/transactions/'. $transaction->hash_id);
 
         $response->assertSuccessful();
         $decoded = $response->decodeResponseJson()->json();
@@ -74,7 +74,7 @@ class TransactionReadSingleTest extends TestCase
 
         $transaction = Transaction::factory()->create();
 
-        $response = $this->getJson('api/v1/transactions/'. $transaction->id);
+        $response = $this->getJson('api/v1/transactions/'. $transaction->hash_id);
 
         $response->assertSuccessful();
         $decoded = $response->decodeResponseJson()->json();

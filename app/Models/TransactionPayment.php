@@ -17,7 +17,7 @@ class TransactionPayment extends Model
     ];
 
     protected $hidden = [
-        'paypal_response_json'
+        'paypal_response_json', 'transaction_id'
     ];
 
     protected $fillable = [

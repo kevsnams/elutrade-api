@@ -26,7 +26,7 @@ You can use either native `fetch()` or `axios`.
 paypal.Buttons({
     createOrder: function() {
         return axios.post('{BASE_URL}/api/v1/transaction/payment/paypal/create', {
-            transaction_id: 1234
+            transaction: 1234
         }).then(function (response) {
             // This is very important!
             // because paypal will pass this to onApprove() callback
@@ -41,7 +41,7 @@ paypal.Buttons({
 
 Property | Description
 ---|---
-`transaction_id` | (Required) The transaction id
+`transaction` | (Required) The transaction id
 
 **Response**
 
@@ -74,7 +74,7 @@ paypal.Buttons({
         // data will contain some information from paypal
 
         return axios.post('{BASE_URL}api/v1/transaction/payment/paypal/capture', {
-            transaction_id: 1234,
+            transaction: 1234,
             order_id: data.orderID
         }).then(function (response) {
             printLog('[4.1] Successful payment');
@@ -95,7 +95,7 @@ paypal.Buttons({
 
 Property | Description
 ---|---
-`transaction_id` | (Required) The transaction id
+`transaction` | (Required) The transaction id
 `order_id` | (Required) The Paypal order id. You can get this on the first parameter of `onApprove()` callback
 
 
@@ -137,7 +137,7 @@ paypal.Buttons({
         // Paypal doesn't actually require us to send a cancel request
         // This is just to add a log on our end
         await axios.post('<?= url('api/v1/transaction/payment/paypal/cancel') ?>', {
-            transaction_id: 1
+            transaction: 1
         });
 
         // Do whatever you want here if the user cancels payment
@@ -149,7 +149,7 @@ paypal.Buttons({
 
 Property | Description
 ---|---
-`transaction_id` | (Required) The transaction id
+`transaction` | (Required) The transaction id
 
 **Response**
 ```

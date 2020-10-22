@@ -3,39 +3,34 @@
 namespace App\Http\Controllers\v1;
 
 use App\Http\Controllers\Controller;
-use App\Models\Transaction;
 use App\Models\TransactionPayment;
-use App\Payments\Paypal;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
 
 class TransactionPaymentController extends Controller
 {
+    private $indexPaginatePerPage = 10;
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(Request $request, $id)
     {
-        $payments = TransactionPayment::ofBuyer($request->user()->id)->get();
+        $request->validate([
+            'per_page' => [
+                'sometimes', 'numeric'
+            ]
+        ]);
 
-        /**
-         * @TODO Paginate this shit
-         */
-        return $payments;
-    }
+        $payments = TransactionPayment::ofBuyer($request->user()->id)
+            ->paginate($request->input('per_page', $this->indexPaginatePerPage));
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-
+        return [
+            'success' => true,
+            'transaction_payments' => $payments
+        ];
     }
 
     /**
@@ -46,17 +41,12 @@ class TransactionPaymentController extends Controller
      */
     public function show(Request $request, $id)
     {
-    }
+        $payment = TransactionPayment::with(['transaction'])->find($id);
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
+        return [
+            'success' => true,
+            'transaction_payment' => $payment
+        ];
     }
 
     /**
@@ -67,6 +57,11 @@ class TransactionPaymentController extends Controller
      */
     public function destroy($id)
     {
-        //
+        throw new AuthenticationException();
+    }
+
+    public function ofTransaction(Request $request, $id)
+    {
+
     }
 }

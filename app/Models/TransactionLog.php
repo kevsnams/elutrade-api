@@ -13,6 +13,10 @@ class TransactionLog extends Model
         'transaction_id', 'description', 'json_details'
     ];
 
+    protected $hidden = [
+        'transaction_id'
+    ];
+
     public function transaction()
     {
         return $this->belongsTo('App\Models\Transaction');
