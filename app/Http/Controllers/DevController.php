@@ -2,20 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Transaction;
+use App\Models\TransactionPayment;
 use Illuminate\Http\Request;
 
 class DevController extends Controller
 {
     public function playground(Request $request)
     {
-        $transaction = Transaction::find(51);
+        $payment = TransactionPayment::with('transaction')->find(2);
 
-        return response()->json([
+        $payment->paypal_response = [
+            'test' => 'foobar'
+        ];
+        $payment->save();
+
+        return [
             'success' => true,
-            'transaction' => $transaction
-        ]);
-
-        return view('dev.playground', compact('transaction'));
+            'transaction_payment' => $payment
+        ];
     }
 }

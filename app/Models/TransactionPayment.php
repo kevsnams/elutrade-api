@@ -21,7 +21,7 @@ class TransactionPayment extends Model
     ];
 
     protected $fillable = [
-        'mode', 'paypal_order_id', 'paypal_response_json'
+        'mode', 'paypal_order_id', 'paypal_response'
     ];
 
     use HasFactory;
@@ -33,6 +33,11 @@ class TransactionPayment extends Model
 
     public function getPaypalResponseAttribute()
     {
-        return json_decode($this->paypal_response_json);
+        return json_decode($this->attributes['paypal_response_json']);
+    }
+
+    public function setPaypalResponseAttribute($value)
+    {
+        $this->attributes['paypal_response_json'] = json_encode($value);
     }
 }

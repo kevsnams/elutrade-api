@@ -79,7 +79,7 @@ class PaypalController extends Controller
             new TransactionPayment([
                 'mode' => TransactionPayment::MODE_PAYPAL,
                 'paypal_order_id' => $response->result->id,
-                'paypal_response_json' => json_encode($response->result)
+                'paypal_response' => $response->result
             ])
         );
 
