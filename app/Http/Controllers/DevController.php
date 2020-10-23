@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ApiCollection;
+use App\Http\Resources\ApiResource;
+use App\Models\Transaction;
 use App\Models\TransactionPayment;
 use Illuminate\Http\Request;
 
@@ -15,6 +18,10 @@ class DevController extends Controller
             'test' => 'foobar'
         ];
         $payment->save();
+
+        $transactions = Transaction::paginate();
+
+        return new ApiCollection($transactions);
 
         return [
             'success' => true,

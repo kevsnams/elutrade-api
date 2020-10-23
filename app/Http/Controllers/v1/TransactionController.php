@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers\v1;
 
-use App\Http\Resources\Transaction as TransactionResource;
-use App\Http\Resources\Transactions as TransactionsResource;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ApiCollection;
+use App\Http\Resources\ApiResource;
 use App\Models\Transaction;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
 class TransactionController extends Controller
@@ -44,10 +43,7 @@ class TransactionController extends Controller
             })
             ->paginate($request->input('per_page', $this->indexPaginatePerPage));
 
-        return [
-            'success' => true,
-            'transactions' => $transactions
-        ];
+        return new ApiCollection($transactions);
     }
 
     /**
@@ -82,7 +78,7 @@ class TransactionController extends Controller
         $transaction->save();
         $transaction->refresh();
 
-        return new TransactionResource($transaction);
+        return new ApiResource($transaction);
     }
 
     /**
@@ -104,10 +100,7 @@ class TransactionController extends Controller
             $transaction = null;
         }
 
-        return [
-            'success' => true,
-            'transaction' => $transaction
-        ];
+        return new ApiResource($transaction);
     }
 
     /**
@@ -158,10 +151,7 @@ class TransactionController extends Controller
             $transaction->save();
         }
 
-        return [
-            'success' => true,
-            'transaction' => $transaction
-        ];
+        return new ApiResource($transaction);
     }
 
     /**
@@ -181,6 +171,6 @@ class TransactionController extends Controller
 
         $transaction->delete();
 
-        return ['success' => true];
+        return new ApiResource(['transaction' => null]);
     }
 }

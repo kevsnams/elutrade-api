@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\v1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ApiCollection;
+use App\Http\Resources\ApiResource;
 use App\Models\TransactionPayment;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
@@ -27,10 +29,7 @@ class TransactionPaymentController extends Controller
         $payments = TransactionPayment::ofBuyer($request->user()->id)
             ->paginate($request->input('per_page', $this->indexPaginatePerPage));
 
-        return [
-            'success' => true,
-            'transaction_payments' => $payments
-        ];
+        return new ApiCollection($payments);
     }
 
     /**
@@ -43,10 +42,7 @@ class TransactionPaymentController extends Controller
     {
         $payment = TransactionPayment::with(['transaction'])->find($id);
 
-        return [
-            'success' => true,
-            'transaction_payment' => $payment
-        ];
+        return new ApiResource($payment);
     }
 
     /**
