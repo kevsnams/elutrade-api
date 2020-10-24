@@ -3622,6 +3622,6 @@ img.inline, .inline           { display:inline-block; }
   /* Icon sprites dont show up be default so kill'em */
   .rcon:after, .icon:before { width:0; height:0; }
 
-  /* TODO Depreciate */
+  /* Depreciate */
   .noprint { display:none; }
 }

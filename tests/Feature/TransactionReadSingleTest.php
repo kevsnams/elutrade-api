@@ -9,7 +9,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
-class TransactionReadSingleTest extends TestCase
+class TransactionReadSingleTest extends BaseTestCase
 {
     use RefreshDatabase;
 
@@ -21,28 +21,24 @@ class TransactionReadSingleTest extends TestCase
         $transaction->save();
         $transaction->refresh();
 
-        $response = $this->getJson('api/v1/transactions/'. $transaction->hash_id);
+        $http = $this->requestJsonApi('api/v1/transactions/'. $transaction->hash_id);
 
-        $response->assertSuccessful();
-        $decoded = $response->decodeResponseJson()->json();
-
-        $this->assertArrayHasKey('success', $decoded);
-        $this->assertArrayHasKey('transaction', $decoded);
-        $this->assertIsArray($decoded['transaction']);
+        $http['response']->assertSuccessful();
+        $this->assertArrayHasKey('success', $http['json']);
+        $this->assertArrayHasKey('data', $http['json']);
+        $this->assertIsArray($http['json']['data']);
+        $this->assertArrayNotHasKey('id', $http['json']['data'], 'Transaction should not have `id` visible');
     }
 
     public function testUnauthorizedReadOnTransactionWithBuyerShouldReturnNull()
     {
         $transaction = Transaction::factory()->create();
+        $http = $this->requestJsonApi('api/v1/transactions/'. $transaction->hash_id);
 
-        $response = $this->getJson('api/v1/transactions/'. $transaction->hash_id);
-
-        $response->assertSuccessful();
-        $decoded = $response->decodeResponseJson()->json();
-
-        $this->assertArrayHasKey('success', $decoded);
-        $this->assertArrayHasKey('transaction', $decoded);
-        $this->assertNull($decoded['transaction']);
+        $http['response']->assertSuccessful();
+        $this->assertArrayHasKey('success', $http['json']);
+        $this->assertArrayHasKey('data', $http['json']);
+        $this->assertNull($http['json']['data']);
     }
 
     public function testAuthorizedReadOnTransactionWithoutBuyerShouldProceed()
@@ -57,14 +53,12 @@ class TransactionReadSingleTest extends TestCase
         $transaction->save();
         $transaction->refresh();
 
-        $response = $this->getJson('api/v1/transactions/'. $transaction->hash_id);
+        $http = $this->requestJsonApi('api/v1/transactions/'. $transaction->hash_id);
 
-        $response->assertSuccessful();
-        $decoded = $response->decodeResponseJson()->json();
-
-        $this->assertArrayHasKey('success', $decoded);
-        $this->assertArrayHasKey('transaction', $decoded);
-        $this->assertIsArray($decoded['transaction']);
+        $http['response']->assertSuccessful();
+        $this->assertArrayHasKey('success', $http['json']);
+        $this->assertArrayHasKey('data', $http['json']);
+        $this->assertIsArray($http['json']['data']);
     }
 
     public function testAuthorizedReadOnTransactionWithDifferentBuyerShouldReturnNull()
@@ -74,13 +68,11 @@ class TransactionReadSingleTest extends TestCase
 
         $transaction = Transaction::factory()->create();
 
-        $response = $this->getJson('api/v1/transactions/'. $transaction->hash_id);
+        $http = $this->requestJsonApi('api/v1/transactions/'. $transaction->hash_id);
 
-        $response->assertSuccessful();
-        $decoded = $response->decodeResponseJson()->json();
-
-        $this->assertArrayHasKey('success', $decoded);
-        $this->assertArrayHasKey('transaction', $decoded);
-        $this->assertNull($decoded['transaction']);
+        $http['response']->assertSuccessful();
+        $this->assertArrayHasKey('success', $http['json']);
+        $this->assertArrayHasKey('data', $http['json']);
+        $this->assertNull($http['json']['data']);
     }
 }

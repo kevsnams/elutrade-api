@@ -2,14 +2,15 @@
 
 namespace Tests\Feature;
 
+use App\Http\Controllers\v1\TransactionController;
 use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Laravel\Sanctum\Sanctum;
-use Tests\TestCase;
+use Tests\Feature\BaseTestCase;
 
-class TransactionReadMultipleTest extends TestCase
+class TransactionReadMultipleTest extends BaseTestCase
 {
     use RefreshDatabase;
     use WithFaker;
@@ -20,83 +21,99 @@ class TransactionReadMultipleTest extends TestCase
             ->count(5)
             ->create();
 
-        $response = $this->getJson('api/v1/transactions');
-
-        $response->assertStatus(401);
-        $response->assertJson([
-            'message' => 'Unauthenticated.'
-        ], true);
+        $this->requestUnAuth('api/v1/transactions');
     }
 
-    public function testAuthorizedFetchAllWithoutParamsShouldGetPerPageNumberOfItems()
+    public function testAuthorizedFetchAllWithoutParams()
     {
         $user = User::factory()->has(Transaction::factory()->count(30))->create();
-
         Sanctum::actingAs($user, ['*']);
 
-        $response = $this->getJson('api/v1/transactions');
+        $http = $this->requestJsonApi('api/v1/transactions');
+        $this->assertCount(config('json-api-paginate.default_size'), $http['json']['data']);
 
-        $decoded = $response->decodeResponseJson()->json();
-
-        $response->assertSuccessful();
-
-        $this->assertArrayHasKey('success', $decoded);
-        $this->assertArrayHasKey('transactions', $decoded);
-        $this->assertArrayHasKey('data', $decoded['transactions']);
-        $this->assertArrayHasKey('links', $decoded['transactions']);
-
-        $this->assertCount(10, $decoded['transactions']['data']);
+        $http['response']->assertSuccessful();
+        $this->assertArrayHasKey('data', $http['json']);
+        $this->assertArrayHasKey('links', $http['json']);
+        $this->assertArrayHasKey('meta', $http['json']);
+        $this->assertEquals(true, $http['json']['success']);
 
         $transactions = Transaction::ofSeller($user->id)
-            ->paginate(10)
+            ->jsonPaginate(config('json-api-paginate.default_size'))
             ->toArray();
 
-        $this->assertCount(count($transactions['data']), $decoded['transactions']['data']);
+        $this->assertCount(count($transactions['data']), $http['json']['data']);
     }
 
-    public function testAuthorizedFetchAllWithPerPageParam()
+    public function testAuthorizedFetchAllWithCustomPageSizeParam()
     {
         $user = User::factory()->has(Transaction::factory()->count(30))->create();
 
         Sanctum::actingAs($user, ['*']);
 
-        $response = $this->getJson('api/v1/transactions?'. http_build_query([
-            'per_page' => 15
-        ]));
+        $http = $this->requestJsonApi('api/v1/transactions', [
+            'page' => [
+                'size' => 15
+            ]
+        ]);
 
-        $decoded = $response->decodeResponseJson()->json();
+        $http['response']->assertSuccessful();
+        $this->assertArrayHasKey('data', $http['json']);
+        $this->assertArrayHasKey('links', $http['json']);
+        $this->assertArrayHasKey('meta', $http['json']);
+        $this->assertEquals(true, $http['json']['success']);
+        $this->assertEquals(30, $http['json']['meta']['total']);
+        $this->assertEquals(2, $http['json']['meta']['last_page']);
 
-        $response->assertSuccessful();
+        $transactions = Transaction::ofSeller($user->id)
+            ->jsonPaginate(15)
+            ->toArray();
 
-        $this->assertArrayHasKey('success', $decoded);
-        $this->assertArrayHasKey('transactions', $decoded);
-        $this->assertArrayHasKey('data', $decoded['transactions']);
-        $this->assertArrayHasKey('links', $decoded['transactions']);
+        $this->assertCount(count($transactions['data']), $http['json']['data']);
+    }
 
-        $this->assertEquals(30, $decoded['transactions']['total']);
-        $this->assertEquals(2, $decoded['transactions']['last_page']);
+    public function testAuthorizedFetchAllWithCustomPageNumberParam()
+    {
+        $user = User::factory()->has(Transaction::factory()->count(30))->create();
+
+        Sanctum::actingAs($user, ['*']);
+
+        $http = $this->requestJsonApi('api/v1/transactions', [
+            'page' => [
+                'number' => 2
+            ]
+        ]);
+
+        $http['response']->assertSuccessful();
+        $this->assertArrayHasKey('data', $http['json']);
+        $this->assertArrayHasKey('links', $http['json']);
+        $this->assertArrayHasKey('meta', $http['json']);
+        $this->assertEquals(true, $http['json']['success']);
+        $this->assertEquals(30, $http['json']['meta']['total']);
+        $this->assertEquals(2, $http['json']['meta']['last_page']);
 
         $transactions = Transaction::ofSeller($user->id)
             ->paginate(15)
             ->toArray();
 
-        $this->assertCount(count($transactions['data']), $decoded['transactions']['data']);
+        $this->assertCount(count($transactions['data']), $http['json']['data']);
     }
 
     public function testAuthorizedFetchAllIncorrectWithParamShouldFail()
     {
         $user = User::factory()->has(Transaction::factory()->count(30))->create();
-
         Sanctum::actingAs($user, ['*']);
 
-        $response = $this->getJson('api/v1/transactions?'. http_build_query([
-            'per_page' => 15,
-            'with' => ['incorrect']
-        ]));
+        $http = $this->requestJsonApi('api/v1/transactions', [
+            'page' => [
+                'size' => 15
+            ],
+            'include' => 'incorrect'
+        ]);
 
-        $response->assertStatus(422);
-        $response->assertJsonValidationErrors([
-            'with'
+        $http['response']->assertStatus(422);
+        $http['response']->assertJsonValidationErrors([
+            'include'
         ]);
     }
 }

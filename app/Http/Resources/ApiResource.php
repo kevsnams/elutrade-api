@@ -14,7 +14,7 @@ class ApiResource extends JsonResource
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        return isset($this->id) ? parent::toArray($request) : null;
     }
 
     public function with($request)

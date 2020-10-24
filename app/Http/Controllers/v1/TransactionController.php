@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\v1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\TransactionRequest;
 use App\Http\Resources\ApiCollection;
 use App\Http\Resources\ApiResource;
 use App\Models\Transaction;
@@ -10,11 +11,10 @@ use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class TransactionController extends Controller
 {
-    private $indexPaginatePerPage = 10;
-
     public function __construct()
     {
         $this->middleware('auth:sanctum')->except('show');
@@ -25,25 +25,16 @@ class TransactionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(TransactionRequest $request)
     {
-        $request->validate([
-            'per_page' => [
-                'sometimes', 'numeric'
-            ],
-
-            'with' => [
-                'sometimes', 'array', 'in:buyer,seller,payment'
-            ]
-        ]);
-
-        $transactions = Transaction::ofSeller($request->user()->id)
-            ->when($request->input('with', ['buyer']), function ($query, $with) {
-                return $query->with($with);
-            })
-            ->paginate($request->input('per_page', $this->indexPaginatePerPage));
-
-        return new ApiCollection($transactions);
+        return new ApiCollection(
+            QueryBuilder::for(Transaction::class)
+                ->ofSeller($request->user()->id)
+                ->allowedIncludes(['buyer', 'seller', 'payment'])
+                ->defaultSort('-updated_at')
+                ->allowedSorts('created_at', 'updated_at')
+                ->jsonPaginate()
+        );
     }
 
     /**
@@ -91,9 +82,7 @@ class TransactionController extends Controller
     {
         $transaction = Transaction::with('buyer', 'seller')->findByHashid($id);
 
-        /**
-         * @TODO Refactor this
-         */
+        /* TODO Refactor this */
         if (Auth::check() && !is_null($request->buyer) && !in_array($request->user()->id, [$transaction->buyer->id, $transaction->seller->id])) {
             $transaction = null;
         } else if (!is_null($transaction->buyer)) {
