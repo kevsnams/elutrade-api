@@ -18,7 +18,7 @@ class TransactionPaymentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(TransactionPaymentCollectionRequest $request, $id)
+    public function index(TransactionPaymentCollectionRequest $request)
     {
         return new ApiCollection(
             QueryBuilder::for(TransactionPayment::class)

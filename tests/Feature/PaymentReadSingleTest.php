@@ -7,7 +7,6 @@ use App\Models\TransactionPayment;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
-use Tests\TestCase;
 
 class PaymentReadSingleTest extends BaseTestCase
 {

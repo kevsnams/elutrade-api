@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class TransactionPayment extends Model
 {
+    use HasFactory;
+
     const MODE_PAYPAL = 1;
 
     /* TODO create a custom Json cast for paypal_response */
