@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class TransactionRequest extends FormRequest
+class TransactionCollectionRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -39,8 +39,8 @@ class TransactionRequest extends FormRequest
                 'sometimes',
                 'array',
                 Rule::in([
-                    'created_at', 'updated_at',
-                    '-created_at', '-updated_at'
+                    'created_at', '-created_at',
+                    'updated_at', '-updated_at'
                 ])
             ]
         ];

@@ -9,7 +9,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
-class TransactionUpdateTest extends TestCase
+class TransactionUpdateTest extends BaseTestCase
 {
     use RefreshDatabase;
     use WithFaker;
@@ -25,16 +25,13 @@ class TransactionUpdateTest extends TestCase
 
         Sanctum::actingAs($transaction->seller, ['*']);
 
-        $response = $this->putJson('api/v1/transactions/'. $transaction->hash_id, [
+        $http = $this->requestJsonApi('api/v1/transactions/'. $transaction->hash_id, [
             'buyer' => $buyer->id
-        ]);
+        ], 'PUT');
 
-        $response->assertSuccessful();
-
-        $decoded = $response->decodeResponseJson()->json();
-
-        $this->assertArrayHasKey('success', $decoded);
-        $this->assertArrayHasKey('transaction', $decoded);
+        $http['response']->assertSuccessful();
+        $this->assertArrayHasKey('success', $http['json']);
+        $this->assertArrayHasKey('data', $http['json']);
     }
 
     public function testShouldNotUpdatedIfBuyerIsNotNull()
@@ -44,12 +41,12 @@ class TransactionUpdateTest extends TestCase
 
         Sanctum::actingAs($transaction->seller, ['*']);
 
-        $response = $this->putJson('api/v1/transactions/'. $transaction->hash_id, [
+        $http = $this->requestJsonApi('api/v1/transactions/'. $transaction->hash_id, [
             'buyer' => $buyer->id
-        ]);
+        ], 'PUT');
 
-        $response->assertStatus(422);
-        $response->assertJsonValidationErrors([
+        $http['response']->assertStatus(422);
+        $http['response']->assertJsonValidationErrors([
             'buyer'
         ]);
     }
@@ -57,18 +54,17 @@ class TransactionUpdateTest extends TestCase
     public function testShouldNotUpdateAnyIfNotSeller()
     {
         $transaction = Transaction::factory()->create();
-
         $notSeller = User::factory()->create();
         $buyer = User::factory()->create();
 
         Sanctum::actingAs($notSeller, ['*']);
 
-        $response = $this->putJson('api/v1/transactions/'. $transaction->hash_id, [
+        $http = $this->requestJsonApi('api/v1/transactions/'. $transaction->hash_id, [
             'buyer' => $buyer->id
-        ]);
+        ], 'PUT');
 
-        $response->assertStatus(401);
-        $response->assertJson([
+        $http['response']->assertStatus(401);
+        $http['response']->assertJson([
             'message' => 'Unauthenticated.'
         ], true);
     }
@@ -81,13 +77,12 @@ class TransactionUpdateTest extends TestCase
         $transaction->refresh();
 
         Sanctum::actingAs($transaction->seller, ['*']);
+        $http = $this->requestJsonApi('api/v1/transactions/' . $transaction->hash_id, [
+            'buyer' => 9999
+        ], 'PUT');
 
-        $response = $this->putJson('api/v1/transactions/'. $transaction->hash_id, [
-            'buyer' => '9999'
-        ]);
-
-        $response->assertStatus(422);
-        $response->assertJsonValidationErrors([
+        $http['response']->assertStatus(422);
+        $http['response']->assertJsonValidationErrors([
             'buyer'
         ]);
     }
@@ -98,12 +93,15 @@ class TransactionUpdateTest extends TestCase
 
         Sanctum::actingAs($transaction->seller, ['*']);
 
-        $response = $this->putJson('api/v1/transactions/'. $transaction->hash_id, []);
-        $decoded = $response->decodeResponseJson()->json();
+        $http = $this->requestJsonApi('api/v1/transactions/' . $transaction->hash_id, [], 'PUT');
 
-        $response->assertSuccessful();
-        $this->assertArrayHasKey('success', $decoded);
-        $this->assertArrayHasKey('transaction', $decoded);
+        $http['response']->assertSuccessful();
+        $this->assertArrayHasKey('success', $http['json']);
+        $this->assertArrayHasKey('data', $http['json']);
+
+        foreach ($transaction->toArray() as $attribute => $value) {
+            $this->assertEquals($value, $http['json']['data'][$attribute]);
+        }
     }
 
     public function testCorrectAmountShouldProceed()
@@ -111,19 +109,17 @@ class TransactionUpdateTest extends TestCase
         $transaction = Transaction::factory()->create();
 
         Sanctum::actingAs($transaction->seller, ['*']);
-
-        $response = $this->putJson('api/v1/transactions/'. $transaction->hash_id, [
+        $http = $this->requestJsonApi('api/v1/transactions/'. $transaction->hash_id, [
             'amount' => 420.69
-        ]);
-        $decoded = $response->decodeResponseJson()->json();
+        ], 'PUT');
 
-        $response->assertSuccessful();
+        $http['response']->assertSuccessful();
         $transaction->refresh();
 
-        $this->assertArrayHasKey('success', $decoded);
-        $this->assertArrayHasKey('transaction', $decoded);
-
+        $this->assertArrayHasKey('success', $http['json']);
+        $this->assertArrayHasKey('data', $http['json']);
         $this->assertEquals(420.69, $transaction->amount);
+        $this->assertEquals(420.69, $http['json']['data']['amount']);
     }
 
     public function testIncorrectAmountShouldFail()
@@ -132,13 +128,12 @@ class TransactionUpdateTest extends TestCase
 
         Sanctum::actingAs($transaction->seller, ['*']);
 
-        $response = $this->putJson('api/v1/transactions/'. $transaction->hash_id, [
+        $http = $this->requestJsonApi('api/v1/transactions/'. $transaction->hash_id, [
             'amount' => '420.x9'
-        ]);
-        $decoded = $response->decodeResponseJson()->json();
+        ], 'PUT');
 
-        $response->assertStatus(422);
-        $response->assertJsonValidationErrors([
+        $http['response']->assertStatus(422);
+        $http['response']->assertJsonValidationErrors([
             'amount'
         ]);
     }
@@ -149,13 +144,12 @@ class TransactionUpdateTest extends TestCase
 
         Sanctum::actingAs($transaction->buyer, ['*']);
 
-        $response = $this->putJson('api/v1/transactions/'. $transaction->hash_id, [
+        $http = $this->requestJsonApi('api/v1/transactions/'. $transaction->hash_id, [
             'amount' => 420.69
-        ]);
-        $decoded = $response->decodeResponseJson()->json();
+        ], 'PUT');
 
-        $response->assertStatus(401);
-        $response->assertJson([
+        $http['response']->assertStatus(401);
+        $http['response']->assertJson([
             'message' => 'Unauthenticated.'
         ], true);
     }

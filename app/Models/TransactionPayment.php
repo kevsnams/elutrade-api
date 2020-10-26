@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -37,5 +38,12 @@ class TransactionPayment extends Model
     public function setPaypalResponseAttribute($value)
     {
         $this->attributes['paypal_response_json'] = json_encode($value);
+    }
+
+    public function scopeOfBuyer(Builder $query, $id)
+    {
+        return $query->whereHas('transaction', function (Builder $childQuery) use ($id) {
+            $childQuery->where('buyer_user_id', $id);
+        });
     }
 }

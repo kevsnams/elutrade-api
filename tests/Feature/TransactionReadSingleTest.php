@@ -30,7 +30,7 @@ class TransactionReadSingleTest extends BaseTestCase
         $this->assertArrayNotHasKey('id', $http['json']['data'], 'Transaction should not have `id` visible');
     }
 
-    public function testUnauthorizedReadOnTransactionWithBuyerShouldReturnNull()
+    public function testUnauthorizedReadOnTransactionWithBuyerShouldReturnEmptyArray()
     {
         $transaction = Transaction::factory()->create();
         $http = $this->requestJsonApi('api/v1/transactions/'. $transaction->hash_id);
@@ -38,7 +38,8 @@ class TransactionReadSingleTest extends BaseTestCase
         $http['response']->assertSuccessful();
         $this->assertArrayHasKey('success', $http['json']);
         $this->assertArrayHasKey('data', $http['json']);
-        $this->assertNull($http['json']['data']);
+        $this->assertIsArray($http['json']['data']);
+        $this->assertEmpty($http['json']['data']);
     }
 
     public function testAuthorizedReadOnTransactionWithoutBuyerShouldProceed()
@@ -61,7 +62,7 @@ class TransactionReadSingleTest extends BaseTestCase
         $this->assertIsArray($http['json']['data']);
     }
 
-    public function testAuthorizedReadOnTransactionWithDifferentBuyerShouldReturnNull()
+    public function testAuthorizedReadOnTransactionWithDifferentBuyerShouldReturnEmptyArray()
     {
         $viewer = User::factory()->create();
         Sanctum::actingAs($viewer, ['*']);
@@ -73,6 +74,7 @@ class TransactionReadSingleTest extends BaseTestCase
         $http['response']->assertSuccessful();
         $this->assertArrayHasKey('success', $http['json']);
         $this->assertArrayHasKey('data', $http['json']);
-        $this->assertNull($http['json']['data']);
+        $this->assertIsArray($http['json']['data']);
+        $this->assertEmpty($http['json']['data']);
     }
 }

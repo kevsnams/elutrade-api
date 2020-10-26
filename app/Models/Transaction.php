@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Mtvs\EloquentHashids\HasHashid;
@@ -44,12 +45,12 @@ class Transaction extends Model
         return $this->hasMany('App\Models\TransactionLog');
     }
 
-    public function scopeOfSeller($query, $id)
+    public function scopeOfSeller(Builder $query, $id)
     {
         return $query->where('seller_user_id', $id);
     }
 
-    public function scopeOfBuyer($query, $id)
+    public function scopeOfBuyer(Builder $query, $id)
     {
         return $query->where('buyer_user_id', $id);
     }

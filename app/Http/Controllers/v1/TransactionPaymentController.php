@@ -3,33 +3,31 @@
 namespace App\Http\Controllers\v1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\TransactionPaymentCollectionRequest;
 use App\Http\Resources\ApiCollection;
 use App\Http\Resources\ApiResource;
 use App\Models\TransactionPayment;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class TransactionPaymentController extends Controller
 {
-    private $indexPaginatePerPage = 10;
-
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request, $id)
+    public function index(TransactionPaymentCollectionRequest $request, $id)
     {
-        $request->validate([
-            'per_page' => [
-                'sometimes', 'numeric'
-            ]
-        ]);
-
-        $payments = TransactionPayment::ofBuyer($request->user()->id)
-            ->paginate($request->input('per_page', $this->indexPaginatePerPage));
-
-        return new ApiCollection($payments);
+        return new ApiCollection(
+            QueryBuilder::for(TransactionPayment::class)
+                ->ofBuyer($request->user()->id)
+                ->allowedIncludes(['transaction'])
+                ->defaultSort('-updated_at')
+                ->allowedSorts('created_at', 'updated_at')
+                ->jsonPaginate()
+        );
     }
 
     /**
@@ -40,7 +38,7 @@ class TransactionPaymentController extends Controller
      */
     public function show(Request $request, $id)
     {
-        $payment = TransactionPayment::with(['transaction'])->find($id);
+        $payment = TransactionPayment::with(['transaction'])->ofBuyer($request->user()->id)->find($id);
 
         return new ApiResource($payment);
     }

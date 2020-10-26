@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\v1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\TransactionRequest;
+use App\Http\Requests\TransactionCollectionRequest;
 use App\Http\Resources\ApiCollection;
 use App\Http\Resources\ApiResource;
 use App\Models\Transaction;
@@ -25,7 +25,7 @@ class TransactionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(TransactionRequest $request)
+    public function index(TransactionCollectionRequest $request)
     {
         return new ApiCollection(
             QueryBuilder::for(Transaction::class)
@@ -160,6 +160,6 @@ class TransactionController extends Controller
 
         $transaction->delete();
 
-        return new ApiResource(['transaction' => null]);
+        return new ApiResource([]);
     }
 }

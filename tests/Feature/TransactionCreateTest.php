@@ -8,18 +8,13 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
-class TransactionCreateTest extends TestCase
+class TransactionCreateTest extends BaseTestCase
 {
     use RefreshDatabase;
 
     public function testNonAuthenticatedCreateShouldFail()
     {
-        $response = $this->postJson('api/v1/transactions', []);
-
-        $response->assertStatus(401);
-        $response->assertJson([
-            'message' => 'Unauthenticated.'
-        ], true);
+        $this->requestUnAuth('api/v1/transactions', [], 'POST');
     }
 
 
@@ -30,10 +25,9 @@ class TransactionCreateTest extends TestCase
             ['*']
         );
 
-        $response = $this->postJson('api/v1/transactions', []);
-
-        $response->assertStatus(422);
-        $response->assertJsonValidationErrors([
+        $http = $this->requestJsonApi('api/v1/transactions', [], 'POST');
+        $http['response']->assertStatus(422);
+        $http['response']->assertJsonValidationErrors([
             'buyer', 'amount'
         ]);
     }
@@ -45,13 +39,13 @@ class TransactionCreateTest extends TestCase
             ['*']
         );
 
-        $response = $this->postJson('api/v1/transactions', [
+        $http = $this->requestJsonApi('api/v1/transactions', [
             'buyer' => null,
             'amount' => 'asd.xd'
-        ]);
+        ], 'POST');
 
-        $response->assertStatus(422);
-        $response->assertJsonValidationErrors([
+        $http['response']->assertStatus(422);
+        $http['response']->assertJsonValidationErrors([
             'amount'
         ]);
     }
@@ -62,18 +56,16 @@ class TransactionCreateTest extends TestCase
             User::factory()->create(),
             ['*']
         );
-
-        $response = $this->postJson('api/v1/transactions', [
+        $http = $this->requestJsonApi('api/v1/transactions', [
             'buyer' => null,
             'amount' => 420.69
-        ]);
+        ], 'POST');
 
-        $response->assertSuccessful();
-        $decoded = $response->decodeResponseJson()->json();
-
-        $this->assertArrayHasKey('success', $decoded);
-        $this->assertArrayHasKey('transaction', $decoded);
-        $this->assertIsArray($decoded['transaction']);
+        $http['response']->assertSuccessful();
+        $this->assertArrayHasKey('success', $http['json']);
+        $this->assertArrayHasKey('data', $http['json']);
+        $this->assertIsArray($http['json']['data']);
+        $this->assertNotEmpty($http['json']['data']);
     }
 
     public function testNumericAmountButStringShouldProceed()
@@ -82,22 +74,19 @@ class TransactionCreateTest extends TestCase
             User::factory()->create(),
             ['*']
         );
-
-        $response = $this->postJson('api/v1/transactions', [
+        $http = $this->requestJsonApi('api/v1/transactions', [
             'buyer' => null,
-            'amount' => '420.69'
-        ]);
+            'amount' => 420.69
+        ], 'POST');
 
-        $response->assertSuccessful();
-        $decoded = $response->decodeResponseJson()->json();
+        $http['response']->assertSuccessful();
+        $this->assertArrayHasKey('success', $http['json']);
+        $this->assertArrayHasKey('data', $http['json']);
+        $this->assertIsArray($http['json']);
 
-        $this->assertArrayHasKey('success', $decoded);
-        $this->assertArrayHasKey('transaction', $decoded);
-        $this->assertIsArray($decoded['transaction']);
+        $transaction = Transaction::findByHashid($http['json']['data']['hash_id']);
 
-        $transaction = Transaction::findOrFail($decoded['transaction']['id']);
-
-        $this->assertEquals($transaction->amount, $decoded['transaction']['amount']);
+        $this->assertEquals($transaction->amount, $http['json']['data']['amount']);
     }
 
     public function testNullBuyerShouldProceed()
@@ -106,20 +95,19 @@ class TransactionCreateTest extends TestCase
             User::factory()->create(),
             ['*']
         );
-
-        $response = $this->postJson('api/v1/transactions', [
+        $http = $this->requestJsonApi('api/v1/transactions', [
             'buyer' => null,
             'amount' => 420.69
-        ]);
+        ], 'POST');
 
-        $response->assertSuccessful();
-        $decoded = $response->decodeResponseJson()->json();
+        $http['response']->assertSuccessful();
+        $this->assertArrayHasKey('success', $http['json']);
+        $this->assertArrayHasKey('data', $http['json']);
+        $this->assertIsArray($http['json']['data']);
 
-        $this->assertArrayHasKey('success', $decoded);
-        $this->assertArrayHasKey('transaction', $decoded);
-        $this->assertIsArray($decoded['transaction']);
+        $transaction = Transaction::with(['buyer'])->findByHashid($http['json']['data']['hash_id']);
 
-        $this->assertEquals(null, $decoded['transaction']['buyer']);
+        $this->assertEquals(null, $transaction->buyer);
     }
 
     public function testBuyerIdNotFoundShouldFail()
@@ -129,13 +117,13 @@ class TransactionCreateTest extends TestCase
             ['*']
         );
 
-        $response = $this->postJson('api/v1/transactions', [
+        $http = $this->requestJsonApi('api/v1/transactions', [
             'buyer' => 9999,
             'amount' => 420.69
-        ]);
+        ], 'POST');
 
-        $response->assertStatus(422);
-        $response->assertJsonValidationErrors([
+        $http['response']->assertStatus(422);
+        $http['response']->assertJsonValidationErrors([
             'buyer'
         ]);
     }
@@ -149,18 +137,17 @@ class TransactionCreateTest extends TestCase
 
         $buyer = User::factory()->create();
 
-        $response = $this->postJson('api/v1/transactions', [
+        $http = $this->requestJsonApi('api/v1/transactions', [
             'buyer' => $buyer->id,
             'amount' => 420.69
-        ]);
+        ], 'POST');
 
-        $response->assertSuccessful();
-        $decoded = $response->decodeResponseJson()->json();
+        $http['response']->assertSuccessful();
+        $this->assertArrayHasKey('success', $http['json']);
+        $this->assertArrayHasKey('data', $http['json']);
+        $this->assertIsArray($http['json']['data']);
 
-        $this->assertArrayHasKey('success', $decoded);
-        $this->assertArrayHasKey('transaction', $decoded);
-        $this->assertIsArray($decoded['transaction']);
-
-        $this->assertEquals($buyer->id, $decoded['transaction']['buyer']['id']);
+        $transaction = Transaction::with(['buyer'])->findByHashid($http['json']['data']['hash_id']);
+        $this->assertEquals($buyer->id, $transaction->buyer->id);
     }
 }
