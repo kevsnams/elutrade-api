@@ -56,10 +56,8 @@ Type | Endpoint | Status
 ## Tests
 Class | Status
 ---|---
-`tests/Feature/UserReadSingleTest.php` | 👷‍♂️
-`tests/Feature/TransactionPaymentReadTest.php` | 🚧
-`tests/Feature/UserTransactionsReadTest.php` | 🚧
-`tests/Feature/TransactionReadMultipleWithIncludeTest.php` | 🚧
+`tests/Feature/UserReadSingleTest.php` | ☑️
+`tests/Feature/TransactionReadMultipleWithIncludeTest.php` | 👷‍♂️
 `tests/Feature/TransactionReadMultipleWithFilterTest.php` | 🚧
 `tests/Feature/TransactionReadMultipleWithSortTest.php` | 🚧
 `tests/Feature/PaymentReadMultipleWithIncludeTest.php` | 🚧

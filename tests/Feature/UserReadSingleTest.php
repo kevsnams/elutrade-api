@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -38,5 +39,20 @@ class UserReadSingleTest extends BaseTestCase
         $this->assertEquals($user->last_name, $http['json']['data']['last_name']);
         $this->assertEquals($user->full_name, $http['json']['data']['full_name']);
         $this->assertEquals($user->email, $http['json']['data']['email']);
+    }
+
+    public function testWithInclude()
+    {
+        $user = User::factory()
+            ->has(Transaction::factory()->count(30))
+            ->create();
+
+        $http = $this->requestJsonApi('api/v1/users/'. $user->hash_id, [
+            'include' => 'transactions'
+        ]);
+
+        $http['response']->assertSuccessful();
+        $this->assertArrayHasKey('transactions', $http['json']['data']);
+        $this->assertCount(30, $http['json']['data']['transactions']);
     }
 }
