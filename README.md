@@ -54,15 +54,16 @@ Type | Endpoint | Status
 `PUT` | /settings/{field\|s} | 🚧
 ---
 ## Tests
-Class | Status
+Class | Description | Status
 ---|---
-`tests/Feature/UserReadSingleTest.php` | ☑️
-`tests/Feature/TransactionReadMultipleWithIncludeTest.php` | 👷‍♂️
-`tests/Feature/TransactionReadMultipleWithFilterTest.php` | 🚧
-`tests/Feature/TransactionReadMultipleWithSortTest.php` | 🚧
-`tests/Feature/PaymentReadMultipleWithIncludeTest.php` | 🚧
-`tests/Feature/PaymentReadMultipleWithFilterTest.php` | 🚧
-`tests/Feature/PaymentReadMultipleWithSortTest.php` | 🚧
+`tests/Feature/UserReadSingleTest.php` | Create test | ☑️
+`tests/Feature/TransactionReadSingleTest.php` | Add test for includes | 👷‍♂️
+`tests/Feature/TransactionReadMultipleWithIncludeTest.php` | Create test | 🚧
+`tests/Feature/TransactionReadMultipleWithFilterTest.php` | Create test | 🚧
+`tests/Feature/TransactionReadMultipleWithSortTest.php` | Create test | 🚧
+`tests/Feature/PaymentReadMultipleWithIncludeTest.php` | Create test | 🚧
+`tests/Feature/PaymentReadMultipleWithFilterTest.php` | Create test | 🚧
+`tests/Feature/PaymentReadMultipleWithSortTest.php` | Create test | 🚧
 ---
 ## Documentation
 🚧 **Needs to be updated after finishing endpoints and tests** 🚧
