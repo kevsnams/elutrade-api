@@ -42,11 +42,6 @@ Type | Endpoint | Status
 `GET` | /transaction/payments | ☑️
 `GET` | /transaction/payments/{id} | ☑️
 ---
-## TransactionLogs
-Type | Endpoint | Status
----|---|---
-`GET` | /transaction/{hash_id}/logs | 👷
----
 ## Users
 Type | Endpoint | Status
 ---|---|---

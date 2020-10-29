@@ -25,8 +25,6 @@ class TransactionPayment extends Model
         'mode', 'paypal_order_id', 'paypal_response'
     ];
 
-    use HasFactory;
-
     public function transaction()
     {
         return $this->belongsTo('App\Models\Transaction');

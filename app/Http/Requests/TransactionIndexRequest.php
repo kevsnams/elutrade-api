@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class TransactionPaymentCollectionRequest extends FormRequest
+class TransactionIndexRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -32,14 +32,13 @@ class TransactionPaymentCollectionRequest extends FormRequest
                 'sometimes',
                 'array',
                 Rule::in([
-                    'transaction'
+                    'buyer', 'seller', 'payment'
                 ])
             ],
             'sort' => [
                 'sometimes',
                 'array',
                 Rule::in([
-                    'mode', '-mode',
                     'created_at', '-created_at',
                     'updated_at', '-updated_at'
                 ])

@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\v1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\TransactionCollectionRequest;
+use App\Http\Requests\TransactionIndexRequest;
+use App\Http\Requests\TransactionShowRequest;
 use App\Http\Resources\ApiCollection;
 use App\Http\Resources\ApiResource;
 use App\Models\Transaction;
@@ -25,7 +26,7 @@ class TransactionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(TransactionCollectionRequest $request)
+    public function index(TransactionIndexRequest $request)
     {
         return new ApiCollection(
             QueryBuilder::for(Transaction::class)
@@ -78,14 +79,16 @@ class TransactionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request, $id)
+    public function show(TransactionShowRequest $request, $id)
     {
-        $transaction = Transaction::with('buyer', 'seller')->findByHashid($id);
+        $transaction = Transaction::with($request->input('include', []))
+            ->findByHashid($id);
 
-        /* TODO Refactor this */
-        if (Auth::check() && !is_null($request->buyer) && !in_array($request->user()->id, [$transaction->buyer->id, $transaction->seller->id])) {
+        if (Auth::check() && !in_array($request->user()->id, [$transaction->buyer_user_id, $transaction->seller_user_id])) {
             $transaction = null;
-        } else if (!is_null($transaction->buyer)) {
+        }
+
+        if (!Auth::check() && !is_null($transaction->buyer)) {
             $transaction = null;
         }
 

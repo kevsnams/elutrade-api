@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\v1\UserController;
 use App\Http\Controllers\v1\AuthController;
 use App\Http\Controllers\v1\Payment\PaypalController;
 use App\Http\Controllers\v1\SignupController;
@@ -21,15 +22,15 @@ Route::post('/signup/facebook', [SignupController::class, 'facebook']);
 Route::post('/signup/google', [SignupController::class, 'google']);
 
 Route::apiResource('transactions', TransactionController::class);
+Route::apiResource('users', UserController::class)
+    ->only(['show']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/auth/user', [AuthController::class, 'user']);
     Route::post('/auth/logout', [AuthController::class, 'logout']);
 
-    Route::apiResource('transaction/payments', TransactionPaymentController::class);
-
-    Route::get('transaction/{id}/payments', [TransactionPaymentController::class, 'ofTransaction']);
-
+    Route::apiResource('transaction/payments', TransactionPaymentController::class)
+        ->only(['index', 'show']);
 
     Route::prefix('/transaction/payment/paypal')->group(function () {
         Route::post('/create', [PaypalController::class, 'postCreate']);

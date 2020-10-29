@@ -27,7 +27,7 @@ class AuthUserRequestTest extends TestCase
         $this->assertArrayHasKey('user', $decoded);
         $this->assertIsArray($decoded['user']);
 
-        $this->assertEquals($user->id, $decoded['user']['id']);
+        $this->assertEquals($user->hash_id, $decoded['user']['hash_id']);
     }
 
     public function testUnauthorizedFetch()

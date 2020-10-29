@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\v1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\TransactionPaymentCollectionRequest;
+use App\Http\Requests\TransactionPaymentIndexRequest;
+use App\Http\Requests\TransactionPaymentShowRequest;
 use App\Http\Resources\ApiCollection;
 use App\Http\Resources\ApiResource;
 use App\Models\TransactionPayment;
@@ -18,7 +19,7 @@ class TransactionPaymentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(TransactionPaymentCollectionRequest $request)
+    public function index(TransactionPaymentIndexRequest $request)
     {
         return new ApiCollection(
             QueryBuilder::for(TransactionPayment::class)
@@ -36,11 +37,13 @@ class TransactionPaymentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request, $id)
+    public function show(TransactionPaymentShowRequest $request, $id)
     {
-        $payment = TransactionPayment::with(['transaction'])->ofBuyer($request->user()->id)->find($id);
-
-        return new ApiResource($payment);
+        return new ApiResource(
+            TransactionPayment::with($request->input('include', []))
+                ->ofBuyer($request->user()->id)
+                ->find($id)
+        );
     }
 
     /**
@@ -52,10 +55,5 @@ class TransactionPaymentController extends Controller
     public function destroy($id)
     {
         throw new AuthenticationException();
-    }
-
-    public function ofTransaction(Request $request, $id)
-    {
-
     }
 }
