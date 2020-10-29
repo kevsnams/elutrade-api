@@ -15,40 +15,49 @@ Open browser and navigate to `http://192.168.0.10:9966`
 
 
 # TODO
+🗨 = To be discussed  
+☑️ = Done  
+👷 = Under Construction    
+
+
 ## Auth
-Endpoint | Status
----|---
-`POST` /auth | ☑️
-`POST` /auth/logout | ☑️
-`POST` /auth/signup/email | ☑️
-`POST` /auth/user | ☑️
+Type | Endpoint | Status
+---|---|---
+`POST` | /auth | ☑️
+`POST` | /auth/logout | ☑️
+`POST` | /auth/signup/email | ☑️
+`POST` | /auth/user | ☑️
 ---
 ## Transactions
-Endpoint | Status
----|---
-`POST` /transactions/{hash_id} | ☑️
-`GET` /transactions | ☑️
-`PUT` /transactions/{hash_id} | ☑️
-`DELETE` /transactions/{hash_id} | ☑️
-`GET` /transactions/{hash_id}/payment | 👷
+Type | Endpoint | Status
+---|---|---
+`POST` | /transactions/{hash_id} | ☑️
+`GET` | /transactions | ☑️
+`PUT` | /transactions/{hash_id} | ☑️
+`DELETE` | /transactions/{hash_id} | ☑️
 ---
 ## TransactionPayments
-Endpoint | Status
----|---
-`GET` /transaction/payments | ☑️
-`GET` /transactions/payments/{id} | ☑️
+Type | Endpoint | Status
+---|---|---
+`GET` | /transaction/payments | ☑️
+`GET` | /transaction/payments/{id} | ☑️
+---
+## TransactionLogs
+Type | Endpoint | Status
+---|---|---
+`GET` | /transaction/{hash_id}/logs | 👷
 ---
 ## Users
-Endpoint | Status
----|---
-`GET` /users | 🗨
-`GET` /users/{hash_id} | 🚧
-`GET` /users/{hash_id}/transactions | 🚧
+Type | Endpoint | Status
+---|---|---
+`GET` | /users | 🗨
+`GET` | /users/{hash_id} | 👷
+`GET` | /users/{hash_id}/transactions | 🚧
 ---
 ## Settings
-Endpoint | Status
----|---
-`PUT` /settings/{field\|s} | 🚧
+Type | Endpoint | Status
+---|---|---
+`PUT` | /settings/{field\|s} | 🚧
 ---
 ## Tests
 Class | Status
