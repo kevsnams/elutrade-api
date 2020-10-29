@@ -17,7 +17,7 @@ Open browser and navigate to `http://192.168.0.10:9966`
 # TODO
 🗨 = To be discussed  
 ☑️ = Done  
-👷 = Under Construction    
+👷‍♂️ = Under Construction    
 
 
 ## Auth
@@ -46,8 +46,7 @@ Type | Endpoint | Status
 Type | Endpoint | Status
 ---|---|---
 `GET` | /users | 🗨
-`GET` | /users/{hash_id} | 👷
-`GET` | /users/{hash_id}/transactions | 🚧
+`GET` | /users/{hash_id} | ☑️
 ---
 ## Settings
 Type | Endpoint | Status
@@ -57,8 +56,7 @@ Type | Endpoint | Status
 ## Tests
 Class | Status
 ---|---
-`tests/Feature/UserReadSingleTest.php` | 🚧
-`tests/Feature/UserReadMultipleTest.php` | 🚧
+`tests/Feature/UserReadSingleTest.php` | 👷‍♂️
 `tests/Feature/TransactionPaymentReadTest.php` | 🚧
 `tests/Feature/UserTransactionsReadTest.php` | 🚧
 `tests/Feature/TransactionReadMultipleWithIncludeTest.php` | 🚧
