@@ -43,6 +43,7 @@ class UserReadSingleTest extends BaseTestCase
 
     public function testWithInclude()
     {
+        /* TODO remove includes, this should be fetched using /users/{hash_id}/transactions so pagination can be applied */
         $user = User::factory()
             ->has(Transaction::factory()->count(30))
             ->create();
