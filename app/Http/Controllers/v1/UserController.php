@@ -4,9 +4,13 @@ namespace App\Http\Controllers\v1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserShowRequest;
+use App\Http\Requests\UserTransactionsRequest;
+use App\Http\Resources\ApiCollection;
 use App\Http\Resources\ApiResource;
+use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class UserController extends Controller
 {
@@ -16,17 +20,6 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
     {
         //
     }
@@ -46,25 +39,30 @@ class UserController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * User -> Transactions
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
+     * Accepts:
+     * - as: ['buyer', 'seller'] (default: 'seller')
+     * - includes: 'payment,buyer' (default:none)
+     *   A comma separated value of related models
+     * - sort: ['updated_at', '-updated_at', 'created_at', '-created_at'] (default:-updated_at)
+     *   Adding a prefix '-' (dash) means DESC
+     **/
+    public function transactions(UserTransactionsRequest $request, $id) : ApiCollection
     {
-        //
-    }
+        $user = User::findByHashid($id);
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        return new ApiCollection(
+            QueryBuilder::for(Transaction::class)
+                ->when($request->input('as') === 'buyer', function ($query) use ($user) {
+                    return $query->ofBuyer($user->id);
+                }, function ($query) use ($user) {
+                    return $query->ofSeller($user->id);
+                })
+                ->allowedIncludes(['payment', 'buyer', 'seller'])
+                ->defaultSort('-updated_at')
+                ->allowedSorts(['updated_at', 'created_at'])
+                ->jsonPaginate()
+        );
     }
 }

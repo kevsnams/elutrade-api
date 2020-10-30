@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Models\Transaction;
+use App\Models\User;
 use Tests\TestCase;
 
 class BaseTestCase extends TestCase
@@ -22,6 +24,24 @@ class BaseTestCase extends TestCase
         $response->assertJson([
             'message' => 'Unauthenticated.'
         ], true);
+    }
+
+    public function createTransactions(int $count): array
+    {
+        $buyer = User::factory()->create();
+        $seller = User::factory()->create();
+        $transactions = Transaction::factory()
+            ->count($count)
+            ->make();
+
+        foreach ($transactions as $transaction) {
+            $transaction->buyer_user_id = $buyer->id;
+            $transaction->seller_user_id = $seller->id;
+            $transaction->amount = $this->faker->numberBetween(100, 9999);
+            $transaction->save();
+        }
+
+        return [$buyer, $seller, $transactions];
     }
 
     private function transformParams($url, $data, $verb)
