@@ -32,7 +32,7 @@ class TransactionPaymentIndexRequest extends FormRequest
                 'sometimes',
                 'array',
                 Rule::in([
-                    'transaction', 'logs'
+                    'transaction'
                 ])
             ],
             'sort' => [

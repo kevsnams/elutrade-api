@@ -40,20 +40,4 @@ class UserReadSingleTest extends BaseTestCase
         $this->assertEquals($user->full_name, $http['json']['data']['full_name']);
         $this->assertEquals($user->email, $http['json']['data']['email']);
     }
-
-    public function testWithInclude()
-    {
-        /* TODO remove includes, this should be fetched using /users/{hash_id}/transactions so pagination can be applied */
-        $user = User::factory()
-            ->has(Transaction::factory()->count(30))
-            ->create();
-
-        $http = $this->requestJsonApi('api/v1/users/'. $user->hash_id, [
-            'include' => 'transactions'
-        ]);
-
-        $http['response']->assertSuccessful();
-        $this->assertArrayHasKey('transactions', $http['json']['data']);
-        $this->assertCount(30, $http['json']['data']['transactions']);
-    }
 }

@@ -53,17 +53,12 @@ Type | Endpoint | Status
 ---|---|---
 `PUT` | /settings/{field\|s} | 🚧
 ---
-## Tests
-Class | Description | Status
----|---
-`tests/Feature/UserReadSingleTest.php` | Create test | ☑️
-`tests/Feature/TransactionReadSingleTest.php` | Add test for includes | 👷‍♂️
-`tests/Feature/TransactionReadMultipleWithIncludeTest.php` | Create test | 🚧
-`tests/Feature/TransactionReadMultipleWithFilterTest.php` | Create test | 🚧
-`tests/Feature/TransactionReadMultipleWithSortTest.php` | Create test | 🚧
-`tests/Feature/PaymentReadMultipleWithIncludeTest.php` | Create test | 🚧
-`tests/Feature/PaymentReadMultipleWithFilterTest.php` | Create test | 🚧
-`tests/Feature/PaymentReadMultipleWithSortTest.php` | Create test | 🚧
+### Relationships
+Type | Endpoint | Status
+---|---|---
+`GET` | /transaction/{hash_id}/payments | 🚧
+`GET` | /transaction/payment/{hash_id}/logs | 🚧
+`GET` | /user/{hash_id}/transactions | 🚧
 ---
 ## Documentation
 🚧 **Needs to be updated after finishing endpoints and tests** 🚧

@@ -24,15 +24,7 @@ class UserShowRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            'include' => [
-                'sometimes',
-                'array',
-                Rule::in([
-                    'transactions'
-                ])
-            ]
-        ];
+        return [];
     }
 
     protected function prepareForValidation()

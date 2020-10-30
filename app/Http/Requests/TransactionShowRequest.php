@@ -29,7 +29,7 @@ class TransactionShowRequest extends FormRequest
                 'sometimes',
                 'array',
                 Rule::in([
-                    'seller', 'buyer', 'payment', 'logs'
+                    'seller', 'buyer', 'payment'
                 ])
             ]
         ];
