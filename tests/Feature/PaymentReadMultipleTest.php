@@ -5,7 +5,6 @@ namespace Tests\Feature;
 use App\Models\Transaction;
 use App\Models\TransactionPayment;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Laravel\Sanctum\Sanctum;

@@ -34,10 +34,11 @@ class PaymentReadSingleTest extends BaseTestCase
         $transaction->refresh();
         $this->assertDatabaseHas('transaction_payments', ['id' => $transaction->payment->id]);
 
-        $http = $this->requestJsonApi('api/v1/transaction/payments/'. $transaction->payment->id);
+        $http = $this->requestJsonApi('api/v1/transaction/payments/'. $transaction->payment->hash_id);
+
         $http['response']->assertSuccessful();
         $this->assertArrayHasKey('data', $http['json']);
-        $this->assertEquals($transaction->payment->id, $http['json']['data']['id']);
+        $this->assertEquals($transaction->payment->hash_id, $http['json']['data']['hash_id']);
     }
 
     public function testMissingPayment()
@@ -57,7 +58,7 @@ class PaymentReadSingleTest extends BaseTestCase
     public function testNonAuthPayment()
     {
         $payment = TransactionPayment::factory()->create();
-        $this->requestUnAuth('api/v1/transaction/payments/'. $payment->id);
+        $this->requestUnAuth('api/v1/transaction/payments/'. $payment->hash_id);
     }
 
     public function testReadNotBuyerShouldReturnEmpty()
@@ -70,7 +71,7 @@ class PaymentReadSingleTest extends BaseTestCase
             ['*']
         );
 
-        $http = $this->requestJsonApi('api/v1/transaction/payments/'. $payment->id);
+        $http = $this->requestJsonApi('api/v1/transaction/payments/'. $payment->hash_id);
 
         $http['response']->assertSuccessful();
         $this->assertEmpty($http['json']['data']);

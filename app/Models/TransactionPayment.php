@@ -5,20 +5,22 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Mtvs\EloquentHashids\HasHashid;
+use Mtvs\EloquentHashids\HashidRouting;
 
 class TransactionPayment extends Model
 {
-    use HasFactory;
+    use HasFactory, HasHashid, HashidRouting;
 
     const MODE_PAYPAL = 1;
 
     /* TODO create a custom Json cast for paypal_response */
     protected $appends = [
-        'paypal_response'
+        'paypal_response', 'hash_id'
     ];
 
     protected $hidden = [
-        'paypal_response_json', 'transaction_id'
+        'paypal_response_json', 'transaction_id', 'id'
     ];
 
     protected $fillable = [
@@ -33,6 +35,11 @@ class TransactionPayment extends Model
     public function getPaypalResponseAttribute()
     {
         return json_decode($this->attributes['paypal_response_json']);
+    }
+
+    public function getHashIdAttribute()
+    {
+        return $this->hashid();
     }
 
     public function setPaypalResponseAttribute($value)

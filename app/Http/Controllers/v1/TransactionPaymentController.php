@@ -42,18 +42,7 @@ class TransactionPaymentController extends Controller
         return new ApiResource(
             TransactionPayment::with($request->input('include', []))
                 ->ofBuyer($request->user()->id)
-                ->find($id)
+                ->findByHashid($id)
         );
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        throw new AuthenticationException();
     }
 }

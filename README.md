@@ -40,7 +40,7 @@ Type | Endpoint | Status
 Type | Endpoint | Status
 ---|---|---
 `GET` | /transaction/payments | ☑️
-`GET` | /transaction/payments/{id} | ☑️
+`GET` | /transaction/payments/{hash_id} | ☑️
 ---
 ## Users
 Type | Endpoint | Status
@@ -57,7 +57,7 @@ Type | Endpoint | Status
 Type | Endpoint | Status
 ---|---|---
 `GET` | /transaction/{hash_id}/payments | 🚧 
-`GET` | /transaction/payment/{hash_id}/logs | 🚧
+`GET` | /transaction/payment/{hash_id}/logs | 🚧 - WIP
 `GET` | /user/{hash_id}/transactions | ☑️
 ---
 ## Documentation
