@@ -32,12 +32,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('transaction/payments', TransactionPaymentController::class)
         ->only(['index', 'show']);
 
-    Route::get('user/{id}/transactions', [UserController::class, 'transactions']);
-
     Route::prefix('/transaction/payment/paypal')->group(function () {
         Route::post('/create', [PaypalController::class, 'postCreate']);
         Route::post('/capture', [PaypalController::class, 'postCapture']);
         Route::post('/cancel', [PaypalController::class, 'postCancel']);
     });
-});
 
+    Route::get('user/{id}/transactions', [UserController::class, 'transactions']);
+    Route::get('transaction/{id}/logs', [TransactionController::class, 'logs']);
+});

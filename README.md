@@ -56,8 +56,7 @@ Type | Endpoint | Status
 ### Relationships
 Type | Endpoint | Status
 ---|---|---
-`GET` | /transaction/{hash_id}/payments | 🚧 
-`GET` | /transaction/payment/{hash_id}/logs | 🚧 - WIP
+`GET` | /transaction/{hash_id}/logs | ☑️
 `GET` | /user/{hash_id}/transactions | ☑️
 ---
 ## Documentation

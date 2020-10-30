@@ -4,11 +4,14 @@ namespace App\Http\Controllers\v1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\TransactionIndexRequest;
+use App\Http\Requests\TransactionLogsRequest;
 use App\Http\Requests\TransactionShowRequest;
 use App\Http\Resources\ApiCollection;
 use App\Http\Resources\ApiResource;
 use App\Models\Transaction;
+use App\Models\TransactionLog;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
@@ -164,5 +167,23 @@ class TransactionController extends Controller
         $transaction->delete();
 
         return new ApiResource([]);
+    }
+
+    /**
+     * Only buyers can access this
+     **/
+    public function logs(TransactionLogsRequest $request, $id)
+    {
+        return new ApiCollection(
+            QueryBuilder::for(TransactionLog::whereHas(
+                'transaction',
+                function (Builder $query) use ($request) {
+                    $query->ofBuyer($request->user()->id);
+                })
+            )->allowedIncludes(['transaction'])
+            ->allowedSorts(['created_at', 'updated_at'])
+            ->defaultSort('-updated_at')
+            ->jsonPaginate()
+        );
     }
 }

@@ -4,9 +4,11 @@ namespace App\Http\Controllers\v1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\TransactionPaymentIndexRequest;
+use App\Http\Requests\TransactionPaymentLogsRequest;
 use App\Http\Requests\TransactionPaymentShowRequest;
 use App\Http\Resources\ApiCollection;
 use App\Http\Resources\ApiResource;
+use App\Models\TransactionLog;
 use App\Models\TransactionPayment;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
