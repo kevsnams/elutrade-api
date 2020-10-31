@@ -14,7 +14,7 @@ npm start
 Open browser and navigate to `http://192.168.0.10:9966`
 
 
-# TODO
+# Milestone
 🗨 = To be discussed  
 ☑️ = Done  
 👷‍♂️ = Under Construction    
@@ -47,11 +47,6 @@ Type | Endpoint | Status
 ---|---|---
 `GET` | /users | 🗨
 `GET` | /users/{hash_id} | ☑️
----
-## Settings
-Type | Endpoint | Status
----|---|---
-`PUT` | /settings/{field\|s} | 🚧
 ---
 ### Relationships
 Type | Endpoint | Status

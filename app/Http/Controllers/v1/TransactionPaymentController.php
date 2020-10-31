@@ -8,10 +8,7 @@ use App\Http\Requests\TransactionPaymentLogsRequest;
 use App\Http\Requests\TransactionPaymentShowRequest;
 use App\Http\Resources\ApiCollection;
 use App\Http\Resources\ApiResource;
-use App\Models\TransactionLog;
 use App\Models\TransactionPayment;
-use Illuminate\Auth\AuthenticationException;
-use Illuminate\Http\Request;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
