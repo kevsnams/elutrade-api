@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Transaction;
+use App\Models\TransactionPayment;
 use App\Models\User;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -42,6 +43,28 @@ class BaseTestCase extends TestCase
             $transaction->seller_user_id = $seller->id;
             $transaction->amount = $this->faker->numberBetween(100, 9999);
             $transaction->save();
+        }
+
+        return [$buyer, $seller, $transactions];
+    }
+
+    public function createTransactionsWithPayments(int $count) : array
+    {
+        [$buyer, $seller, $transactions] = $this->createTransactions($count);
+
+        foreach ($transactions as $transaction) {
+            $transaction->payment()->save(
+                new TransactionPayment([
+                    'transaction_id' => $transaction->id,
+                    'mode' => TransactionPayment::MODE_PAYPAL,
+                    'paypal_order_id' => 'ABC123DEF456GHI',
+                    'paypal_response_json' => json_encode([
+                        'test' => 'foo'
+                    ])
+                ])
+            );
+            $transaction->save();
+            $transaction->refresh();
         }
 
         return [$buyer, $seller, $transactions];

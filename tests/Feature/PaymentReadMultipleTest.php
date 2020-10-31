@@ -56,4 +56,26 @@ class PaymentReadMultipleTest extends BaseTestCase
         $this->assertEquals(config('json-api-paginate.default_size'), count($http['json']['data']));
         $this->assertEquals(TransactionPayment::ofBuyer($buyer->id)->count(), $http['json']['meta']['total']);
     }
+
+    public function testFilter()
+    {
+        [$buyer, $seller, $transactions] = $this->createTransactionsWithPayments(10);
+
+        Sanctum::actingAs($buyer, ['*']);
+
+        $http = $this->requestJsonApi('api/v1/transaction/payments', [
+            'include' => 'transaction',
+            'filter' => [
+                'mode' => TransactionPayment::MODE_PAYPAL
+            ]
+        ]);
+
+        $http['response']->assertSuccessful();
+        $this->assertArrayHasKey('data', $http['json']);
+        $this->assertNotEmpty($http['json']['data']);
+
+        foreach ($http['json']['data'] as $data) {
+            $this->assertEquals(TransactionPayment::MODE_PAYPAL, $data['mode']);
+        }
+    }
 }

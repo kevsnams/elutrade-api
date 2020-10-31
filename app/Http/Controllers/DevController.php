@@ -28,6 +28,17 @@ class DevController extends Controller
         //     $transaction->amount = '9999';
         //     $transaction->save();
         // }
+        return new ApiCollection(
+            QueryBuilder::for(TransactionPayment::class)
+                ->ofBuyer(64)
+                ->allowedIncludes(['transaction'])
+                ->defaultSort('-updated_at')
+                ->allowedSorts('created_at', 'updated_at')
+                ->allowedFilters([
+                    AllowedFilter::exact('mode')
+                ])
+                ->jsonPaginate()
+        );
 
         return new ApiCollection(
             QueryBuilder::for(Transaction::class)

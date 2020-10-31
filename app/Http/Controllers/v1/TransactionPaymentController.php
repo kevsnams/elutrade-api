@@ -12,6 +12,7 @@ use App\Models\TransactionLog;
 use App\Models\TransactionPayment;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class TransactionPaymentController extends Controller
@@ -29,6 +30,9 @@ class TransactionPaymentController extends Controller
                 ->allowedIncludes(['transaction'])
                 ->defaultSort('-updated_at')
                 ->allowedSorts('created_at', 'updated_at')
+                ->allowedFilters([
+                    AllowedFilter::exact('mode')
+                ])
                 ->jsonPaginate()
         );
     }
