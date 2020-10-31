@@ -24,7 +24,6 @@ class UserTransactionsRequest extends FormRequest
      */
     public function rules()
     {
-        /* TODO Rules for filter */
         return [
             'page.size' => ['sometimes', 'integer'],
             'page.number' => ['sometimes', 'integer'],
@@ -45,7 +44,8 @@ class UserTransactionsRequest extends FormRequest
                 'array',
                 Rule::in([
                     'created_at', '-created_at',
-                    'updated_at', '-updated_at'
+                    'updated_at', '-updated_at',
+                    'amount', '-amount'
                 ])
             ]
         ];

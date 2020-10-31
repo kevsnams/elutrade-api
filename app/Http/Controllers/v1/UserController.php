@@ -10,6 +10,7 @@ use App\Http\Resources\ApiResource;
 use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class UserController extends Controller
@@ -61,7 +62,7 @@ class UserController extends Controller
                 })
                 ->allowedIncludes(['payment', 'buyer', 'seller'])
                 ->defaultSort('-updated_at')
-                ->allowedSorts(['updated_at', 'created_at'])
+                ->allowedSorts(['updated_at', 'created_at', 'amount'])
                 ->jsonPaginate()
         );
     }
