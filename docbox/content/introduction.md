@@ -19,4 +19,5 @@ You can use `php artisan serve` or clone this repo to your apache server.
 
 ## Changelog
 
-- Transaction `id` is no longer used. Use `hash_id` from now on.
+- Numerical IDs are now invalid. For endpoints: `/users/{hash_id}`, `/transactions/{hash_id}` and `/transaction/payments/{hash_id}` should now pass `hash_id`
+- Added `/transaction/{hash_id}/logs` and `/user/{hash_id}/transactions` endpoints

@@ -16,5 +16,7 @@ module.exports =
   fs.readFileSync('./content/requests.md', 'utf8') + '\n' +
   '# Endpoints\n' +
   fs.readFileSync('./content/endpoints.md', 'utf8') + '\n'+
+  '# Relationships (sana all)\n' +
+  fs.readFileSync('./content/relationships.md', 'utf8') + '\n'+
   '# Payments\n' +
   fs.readFileSync('./content/payments.md', 'utf8') + '\n';

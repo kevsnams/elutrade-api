@@ -14,32 +14,12 @@ Property | Description
 `password` | (Required) The password used for login
 `device_name` | (Required) The device the user is using. *DO NOT* hard code this, use device generated string.
 
-```javascript
-import axios from 'axios';
-
-axios.post('{BASE_URL}/api/v1/auth', {
-    email: 'kevin@example.com',
-    password: 'password',
-    device_name: '{DEVICE_NAME}'
-});
-```
-
 **Response**
 
-```
-{
-    "success": true,
-    "access_token": "1|s0m3_t0KeN_$tr1nG_h3Re"
-}
-```
-
-This will be required whenever you make a request to authenticated endpoints. Add the response `access_token` to `Authorization` header. 
-
-```
-{
-    "Authorization": "Bearer {access_token}"
-}
-```
+Property | Description
+---|---
+`success` | true/false
+`access_token` | The token needed for Authorization. Example: `"Authorization": "Bearer {access_token}`
 
 If this fails on validation, the message will only appear on `email` parameter.
 
@@ -64,7 +44,9 @@ import axios from 'axios';
 
 axios.post('{BASE_URL}/api/v1/auth/logout');
 ```
-This endpoint does not require any request body
+**Request**
+
+NONE
 
 **Response**
 ```
@@ -99,11 +81,15 @@ Property | Description
 `password_confirm` | (Required) Password confirmation, a repeat of `password` both must be the same.
 
 **Response**
+
+Successful signup response
 ```
 {
     "success": true
 }
 ```
+
+For error validation response, see [Validation Errors](#validation-errors)
 
 ## AuthUser
 `auth: required`
@@ -111,12 +97,15 @@ Property | Description
 POST api/v1/auth/user
 ```
 Fetches the current authenticated user.  
-This endpoint does not require any request body
 ```javascript
 import axios from 'axios';
 
 axios.post('{BASE_URL}/api/v1/auth/user)
 ```
+
+**Request**
+
+NONE
 
 **Response**
 ```
@@ -129,7 +118,6 @@ axios.post('{BASE_URL}/api/v1/auth/user)
 ```
 
 ## Transactions
-**NOTE** Instead of `id`, use `hash_id` to identify a single transaction.
 
 ### Create
 `auth: required`
@@ -155,20 +143,15 @@ Property | Description
 `amount` | (Required) The transaction amount
 
 **Response**
-```
-{
-    "success": true,
-    "transaction": {
-        /**
-         * The transaction information.
-         * This also has a `seller` and `buyer` property which fetches
-         * the seller and buyer information respectively
-         */
-    }
-}
-```
 
-### Read All
+Property | Description
+---|---
+`success` | true
+`data` | The transactions data. Returns an empty array if no data can be found
+
+For error validation response, see [Validation Errors](#validation-errors)
+
+### Fetch Many
 `auth: required`
 ```endpoint
 GET api/v1/transactions
@@ -179,14 +162,11 @@ Fetches all transactions of the seller. The response JSON is paginated.
 
 Property | Description
 ---|---
-`per_page` | (Optional) Number of transactions to return per page. Default: 10
-`with` | (Optional) This attaches an object to transaction response. Available values are 'buyer', 'seller' and 'payment'. Default: \['buyer'\]
-
-- `buyer` The buyer object that is associated to the transaction
-- `seller` The seller object that is associated to the transaction
-- `payment` The payment object that is associated to the transaction
-
-**NOTE** Returns `null` if nothing is associated
+`page[size]` | Number of items to display per page
+`page[number]` | The page number you want to jump to. Defaults to page 1
+`include` | A comma separated value of related data. Values allowed are: `buyer`, `seller` and `payment`. Returns `null` if nothing is associated
+`sort` | The attribute of which to sort by. Values allowed are: `created_at` and `updated_at`. By default it is `ASC`, to use `DESC` just prefix the value with `-` dash symbol. Example: `-created_at` will apply `created_at DESC`. Default: `-updated_at`
+`filter[of_buyer]` | If you want to only show transactions of a specific buyer. Example: `filter[of_buyer]=BUYER_HASH_ID_HERE`
 
 
 ```javascript
@@ -194,9 +174,18 @@ import axios from 'axios';
 
 const qs = required('query-string');
 const props = qs.stringify({
-    per_page: 10,
-    // Includes 'buyer' and 'seller' to the result set
-    with: ['buyer', 'seller']
+    page: {
+        size: 15, // 15 transactions per page
+        number: 2 // Show page 2
+    },
+
+    include: 'buyer,payment', // Get associated buyer and seller
+
+    sort: '-created_at', // created_at DESC
+
+    filter: {
+        of_buyer: 'BUYER_HASH_ID' // Will only show transactions for a specific buyer
+    }
 });
 
 axios.get(`{BASE_URL}/api/v1/transactions${props}`);
@@ -204,94 +193,18 @@ axios.get(`{BASE_URL}/api/v1/transactions${props}`);
 
 **Response**
 
-```
-{
-    "success": true,
-    "transactions": {
-        "current_page": 1,
-        "data": [
-            {
-                "id": 30,
-                "amount": "920686.00",
-                "status": 0,
-                "created_at": "2020-10-01T14:11:30.000000Z",
-                "updated_at": "2020-10-01T14:11:30.000000Z",
-                "buyer": {
-                    "id": 45,
-                    "email": "hhodkiewicz@example.com",
-                    "first_name": "Ellie",
-                    "middle_name": "Ullrich",
-                    "last_name": "Ledner"
-                }
-            },
-            {
-                "id": 31,
-                "amount": "697644.00",
-                "status": 0,
-                "created_at": "2020-10-01T14:11:30.000000Z",
-                "updated_at": "2020-10-01T14:11:30.000000Z",
-                "buyer": {
-                    "id": 46,
-                    "email": "ludie87@example.com",
-                    "first_name": "Aurelia",
-                    "middle_name": "Schmitt",
-                    "last_name": "Rogahn"
-                }
+Property | Details
+---|---
+`data` | The transactions data. Returns an empty array if no data can be found
+`links` | The pagination links
+`meta` | The metadata of the result set. Current page, last page, total, etc..
 
-                // Adds "seller" if specified on 'with' property
-            }
 
-            // More results...
-
-        ],
-        "first_page_url": "http://127.0.0.1:8000/api/v1/transactions?page=1",
-        "from": 1,
-        "last_page": 3,
-        "last_page_url": "http://127.0.0.1:8000/api/v1/transactions?page=3",
-        "links": [
-            {
-                "url": null,
-                "label": "Previous",
-                "active": false
-            },
-            {
-                "url": "http://127.0.0.1:8000/api/v1/transactions?page=1",
-                "label": 1,
-                "active": true
-            },
-            {
-                "url": "http://127.0.0.1:8000/api/v1/transactions?page=2",
-                "label": 2,
-                "active": false
-            },
-            {
-                "url": "http://127.0.0.1:8000/api/v1/transactions?page=3",
-                "label": 3,
-                "active": false
-            },
-            {
-                "url": "http://127.0.0.1:8000/api/v1/transactions?page=2",
-                "label": "Next",
-                "active": false
-            }
-        ],
-        "next_page_url": "http://127.0.0.1:8000/api/v1/transactions?page=2",
-        "path": "http://127.0.0.1:8000/api/v1/transactions",
-        "per_page": 10,
-        "prev_page_url": null,
-        "to": 10,
-        "total": 30
-    }
-}
-```
-
-### Read Single
+### Fetch One
 ```endpoint
 GET apit/v1/transactions/{hash_id}
 ```
-
 Fetches a single transaction by its {hash_id}  
-This endpoint does not require any request body
 
 ```javascript
 import axios from 'axios';
@@ -301,21 +214,24 @@ axios.get('{BASE_URL}/api/v1/transactions/{hash_id}').then((response) {
 });
 ```
 
+**Request**
+
+Property | Description
+---|---
+`include` | A comma separated value of related data. Values allowed are: `buyer`, `seller` and `payment`. Returns `null` if nothing is associated
+
 **Response**
+
+Property | Description
+---|---
+`success` | true
+`data` | The transactions data. Returns an empty array if no data can be found
 
 Fetching a single transaction has two conditions before you can access the resource. These are:  
 - If buyer is **NULL**, the transaction can be accessed both publicly and privately
 - If buyer is **NOT NULL**, only the seller and buyer can view the resource
 
-```
-{
-    "success": true,
-    "transaction": {
-        // NULL if transaction does not exist
-        // Object if exists
-    }
-}
-```
+
 ### Update
 `auth: required`
 ```endpoint
@@ -346,14 +262,10 @@ Property | Description
 
 **Response**
 
-```
-{
-    "success": true,
-    "transaction": {
-        // Updated transaction properties
-    }
-}
-```
+Property | Description
+---|---
+`success` | true
+`data` | The transactions data. Returns an empty array if no data can be found
 
 ### Delete
 `auth: required`
@@ -377,3 +289,79 @@ axios.delete('{BASE_URL}/api/v1/transactions/{hash_id}');
     "success": true
 }
 ```
+
+## TransactionPayments
+
+
+
+### Read Many
+`auth:required`
+```endpoint
+GET api/v1/transaction/payments
+```
+This fetches all payments made by the user
+
+**Request**
+
+Property | Description
+---|---
+`page[size]` | Number of items to display per page
+`page[number]` | The page number you want to jump to. Defaults to page 1
+`include` | A comma separated value of related data. The only allowed value is `transaction`
+`sort` | The attribute of which to sort by. Values allowed are: `created_at` and `updated_at`. By default it is `ASC`, to use `DESC` just prefix the value with `-` dash symbol. Example: `-created_at` will apply `created_at DESC`. Default: `-updated_at`
+
+**Response**
+
+Property | Details
+---|---
+`data` | The transactions data. Returns an empty array if no data can be found
+`links` | The pagination links
+`meta` | The metadata of the result set. Current page, last page, total, etc..
+
+### Read Single
+`auth:required`
+```endpoint
+GET api/v1/transaction/payment/{hash_id}
+```
+
+Get a buyer's payment information
+
+**Request**
+
+Property | Description
+---|---
+`include` | A comma separated value of related data. The only allowed value is `transaction`
+
+**Response**
+
+Property | Description
+---|---
+`success` | true
+`data` | The transactions data. Returns an empty array if no data can be found
+
+## Users
+
+### Fetch One
+`auth: required`
+```endpoint
+GET api/v1/users/{hash_id}
+```
+
+This fetches a user's information
+
+```javascript
+import axios from 'axios';
+
+axios.delete('{BASE_URL}/api/v1/users/{hash_id}');
+```
+
+**Request**
+
+NONE
+
+**Response**
+
+Property | Description
+---|---
+`success` | true
+`data` | The user's data. Returns an empty array if no data can be found

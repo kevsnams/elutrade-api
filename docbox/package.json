@@ -40,7 +40,7 @@
     "es6-promise": "^4.1.0",
     "eslint": "^5.14.1",
     "eslint-plugin-babel": "^5.0.0",
-    "eslint-plugin-react": "^7.12.2",
+    "eslint-plugin-react": "^7.21.5",
     "github-slugger": "^1.0.1",
     "highlight.js": "^9.15.5",
     "isomorphic-fetch": "^2.2.0",
@@ -64,7 +64,7 @@
     "expect": "^24.1.0",
     "mocha": "^6.0.0",
     "standard-version": "^6.0.1",
-    "uglify-js": "^3.0.27"
+    "uglify-js": "^3.11.4"
   },
   "config": {
     "commitizen": {

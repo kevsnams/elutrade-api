@@ -38,3 +38,13 @@ For endpoints that require user authentication, a response will be sent with a `
     "message": "Unauthenticated."
 }
 ````
+
+### Server Related Errors
+Such as thrown exceptions. Will return status `500`
+
+```javascript
+// Example server related response
+{
+    "message": "Error details here"
+}
+```
