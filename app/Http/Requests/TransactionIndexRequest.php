@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Vinkla\Hashids\Facades\Hashids;
 
 class TransactionIndexRequest extends FormRequest
 {
@@ -24,7 +25,6 @@ class TransactionIndexRequest extends FormRequest
      */
     public function rules()
     {
-        /* TODO Rules for filter */
         return [
             'page.size' => ['sometimes', 'integer'],
             'page.number' => ['sometimes', 'integer'],
@@ -35,6 +35,7 @@ class TransactionIndexRequest extends FormRequest
                     'buyer', 'seller', 'payment'
                 ])
             ],
+
             'sort' => [
                 'sometimes',
                 'array',
@@ -42,6 +43,16 @@ class TransactionIndexRequest extends FormRequest
                     'created_at', '-created_at',
                     'updated_at', '-updated_at'
                 ])
+            ],
+
+            'filter' => [
+                'sometimes',
+                'array'
+            ],
+
+            'filter.of_buyer' => [
+                'sometimes',
+                'alpha_num'
             ]
         ];
     }

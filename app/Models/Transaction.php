@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Mtvs\EloquentHashids\HasHashid;
 use Mtvs\EloquentHashids\HashidRouting;
+use Vinkla\Hashids\Facades\Hashids;
 
 class Transaction extends Model
 {
@@ -47,11 +48,13 @@ class Transaction extends Model
 
     public function scopeOfSeller(Builder $query, $id)
     {
+        $id = is_string($id) ? Hashids::decode($id)[0] : $id;
         return $query->where('seller_user_id', $id);
     }
 
     public function scopeOfBuyer(Builder $query, $id)
     {
+        $id = is_string($id) ? Hashids::decode($id)[0] : $id;
         return $query->where('buyer_user_id', $id);
     }
 

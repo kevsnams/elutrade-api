@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class TransactionController extends Controller
@@ -37,6 +38,9 @@ class TransactionController extends Controller
                 ->allowedIncludes(['buyer', 'seller', 'payment'])
                 ->defaultSort('-updated_at')
                 ->allowedSorts('created_at', 'updated_at')
+                ->allowedFilters([
+                    AllowedFilter::scope('of_buyer')
+                ])
                 ->jsonPaginate()
         );
     }

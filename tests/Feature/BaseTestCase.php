@@ -4,10 +4,13 @@ namespace Tests\Feature;
 
 use App\Models\Transaction;
 use App\Models\User;
+use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class BaseTestCase extends TestCase
 {
+    use WithFaker;
+
     public function requestJsonApi($url, $data = [], $verb = 'GET')
     {
         $response = $this->transformParams($url, $data, $verb);
