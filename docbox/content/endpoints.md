@@ -94,13 +94,13 @@ For error validation response, see [Validation Errors](#validation-errors)
 ## AuthUser
 `auth: required`
 ```endpoint
-POST api/v1/auth/user
+GET api/v1/auth/user
 ```
 Fetches the current authenticated user.  
 ```javascript
 import axios from 'axios';
 
-axios.post('{BASE_URL}/api/v1/auth/user)
+axios.get('{BASE_URL}/api/v1/auth/user)
 ```
 
 **Request**
