@@ -54,26 +54,25 @@ class PaymentReadSingleTest extends BaseTestCase
         $this->assertArrayHasKey('data', $http['json']);
         $this->assertEmpty($http['json']['data']);
     }
+    public function testReadNotBuyerShouldReturnEmpty()
+    {
+        $otherBuyer = User::factory()->create();
+        $payment = TransactionPayment::factory()->create();
+
+        Sanctum::actingAs(
+            $otherBuyer,
+            ['*']
+        );
+
+        $http = $this->requestJsonApi('api/v1/transaction/payments/' . $payment->hash_id);
+
+        $http['response']->assertSuccessful();
+        $this->assertEmpty($http['json']['data']);
+    }
 
     public function testNonAuthPayment()
     {
         $payment = TransactionPayment::factory()->create();
         $this->requestUnAuth('api/v1/transaction/payments/'. $payment->hash_id);
-    }
-
-    public function testReadNotBuyerShouldReturnEmpty()
-    {
-        $notBuyer = User::factory()->create();
-        $payment = TransactionPayment::factory()->create();
-
-        Sanctum::actingAs(
-            $notBuyer,
-            ['*']
-        );
-
-        $http = $this->requestJsonApi('api/v1/transaction/payments/'. $payment->hash_id);
-
-        $http['response']->assertSuccessful();
-        $this->assertEmpty($http['json']['data']);
     }
 }

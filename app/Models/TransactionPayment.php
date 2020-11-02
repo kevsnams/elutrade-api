@@ -15,7 +15,6 @@ class TransactionPayment extends Model
 
     const MODE_PAYPAL = 1;
 
-    /* TODO create a custom Json cast for paypal_response */
     protected $appends = [
         'paypal_response', 'hash_id'
     ];
