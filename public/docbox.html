@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv='X-UA-Compatible' content='IE=11' />
+    <title>Docbox</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <link href='css/base.css' rel='stylesheet' />
+    <link href='css/style.css' rel='stylesheet' />
+    <link href='css/railscasts.css' rel='stylesheet' />
+  </head>
+  <body>
+    <!--START--><div id='app'><div class="container unlimiter" data-reactroot="" data-reactid="1" data-react-checksum="1788421483"><div class="fixed-top fixed-right space-left16" data-reactid="2"><div class="fill-light col6 pin-right" data-reactid="3"></div></div><div class="space-top5 scroll-styled overflow-auto pad1 width16 sidebar fixed-left fill-dark dark" data-reactid="4"><div class="pad0x small" data-reactid="5"><div class="small pad0x quiet space-top1" data-reactid="6">Getting Started</div><a href="#installation" class="line-height15 pad0x pad00y quiet block " data-reactid="7">Installation</a><a href="#database-seeding" class="line-height15 pad0x pad00y quiet block " data-reactid="8">Database Seeding</a><a href="#server" class="line-height15 pad0x pad00y quiet block " data-reactid="9">Server</a><a href="#changelog" class="line-height15 pad0x pad00y quiet block " data-reactid="10">Changelog</a><div class="small pad0x quiet space-top1" data-reactid="11">HTTP</div><a href="#requests" class="line-height15 pad0x pad00y quiet block " data-reactid="12">Requests</a><a href="#responses" class="line-height15 pad0x pad00y quiet block " data-reactid="13">Responses</a><div class="small pad0x quiet space-top1" data-reactid="14">Endpoints</div><a href="#auth" class="line-height15 pad0x pad00y quiet block " data-reactid="15">Auth</a><a href="#authuser" class="line-height15 pad0x pad00y quiet block " data-reactid="16">AuthUser</a><a href="#transactions" class="line-height15 pad0x pad00y quiet block " data-reactid="17">Transactions</a><a href="#transactionpayments" class="line-height15 pad0x pad00y quiet block " data-reactid="18">TransactionPayments</a><a href="#users" class="line-height15 pad0x pad00y quiet block " data-reactid="19">Users</a><div class="small pad0x quiet space-top1" data-reactid="20">Relationships (sana all)</div><a href="#user---transactions" class="line-height15 pad0x pad00y quiet block " data-reactid="21">User - Transactions</a><a href="#transaction---logs" class="line-height15 pad0x pad00y quiet block " data-reactid="22">Transaction - Logs</a><div class="small pad0x quiet space-top1" data-reactid="23">Payments</div><a href="#paypal" class="line-height15 pad0x pad00y quiet block " data-reactid="24">Paypal</a></div></div><div class="space-left16" data-reactid="25"><div class="" data-reactid="26"><div class="clearfix" data-reactid="27"><div data-title="Installation" class="keyline-top section contain clearfix " data-reactid="28"><div class="space-bottom8 col6 pad2x prose clip" data-reactid="29"><h2 id="installation">Installation</h2>
+<p>If this API is a fresh clone, then you need to execute <code>composer install</code><br>
+Otherwise, just keep in mind to run <code>composer update</code> if there are changes made to the dependencies.  </p>
+<p>Once you have the dependencies installed, run:<br>
+<code>php artisan serve</code>  </p>
+</div></div><div data-title="Database Seeding" class="keyline-top section contain clearfix " data-reactid="30"><div class="space-bottom8 col6 pad2x prose clip" data-reactid="31"><h2 id="database-seeding">Database Seeding</h2>
+<p>To run the seeder, run:
+<code>php artisan db:seed</code>  </p>
+<p>This will create users with associated transactions.
+All seeded users will have a password: <code>password</code></p>
+</div></div><div data-title="Server" class="keyline-top section contain clearfix " data-reactid="32"><div class="space-bottom8 col6 pad2x prose clip" data-reactid="33"><h2 id="server">Server</h2>
+<p>You can use <code>php artisan serve</code> or clone this repo to your apache server.  </p>
+</div></div><div data-title="Changelog" class="keyline-top section contain clearfix " data-reactid="34"><div class="space-bottom8 col6 pad2x prose clip" data-reactid="35"><h2 id="changelog">Changelog</h2>
+<ul>
+<li>Numerical IDs are now invalid. For endpoints: <code>/users/{hash_id}</code>, <code>/transactions/{hash_id}</code> and <code>/transaction/payments/{hash_id}</code> should now pass <code>hash_id</code></li>
+<li>Added <code>/transaction/{hash_id}/logs</code> and <code>/user/{hash_id}/transactions</code> endpoints</li>
+</ul>
+</div></div><div data-title="Requests" class="keyline-top section contain clearfix " data-reactid="36"><div class="space-bottom8 col6 pad2x prose clip" data-reactid="37"><h2 id="requests">Requests</h2>
+<p>If the request body has an input, most of the endpoints will run a validation. The validation goes through Laravel's validation process.  </p>
+<p>To know more about it, go here: <a href="https://laravel.com/docs/8.x/validation#quick-ajax-requests-and-validation">AJAX Requests and Validation</a></p>
+</div></div><div data-title="Responses" class="keyline-top section contain clearfix " data-reactid="38"><div class="space-bottom8 col6 pad2x prose clip" data-reactid="39"><h2 id="responses">Responses</h2>
+<p>A successful API call will be sent with a <code>200</code> HTTP status code.</p>
+</div></div><div data-title="Validation Errors" class="keyline-top section contain clearfix " data-reactid="40"><div class="space-bottom8 col6 pad2x prose clip" data-reactid="41"><h3 id="validation-errors">Validation Errors</h3>
+<p>All validation error response will be sent with a <code>422</code> HTTP status code</p>
+<p>Failed validation follows this format:</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>message</code></td>
+<td>(String) The generalized description of the errors</td>
+</tr>
+<tr>
+<td><code>errors</code></td>
+<td>(Object) The specific error messages where the <code>key</code> is the name of field/parameter and <code>value</code> will be an array of all the error messages</td>
+</tr>
+</tbody>
+</table>
+</div><div class="space-bottom4 col6 pad2 prose clip fill-light space-top5" data-reactid="42"><pre class='hljs'>{
+    <span class="hljs-string">"message"</span>: <span class="hljs-string">"The given data is invalid"</span>,
+    <span class="hljs-string">"errors"</span>: {
+        <span class="hljs-string">"parameter_name"</span>: [
+            <span class="hljs-string">"The parameter_name is required"</span>,
+            <span class="hljs-comment">// More errors will be added within this array</span>
+        ]
+    }
+}</pre>
+</div></div><div data-title="Authentication Errors" class="keyline-top section contain clearfix " data-reactid="43"><div class="space-bottom8 col6 pad2x prose clip" data-reactid="44"><h3 id="authentication-errors">Authentication Errors</h3>
+<p>For endpoints that require user authentication, a response will be sent with a <code>401</code> HTTP Status code IF the user is unathorized and will <em>always</em> contain this JSON:</p>
+</div><div class="space-bottom4 col6 pad2 prose clip fill-light space-top5" data-reactid="45"><pre class='hljs'>{
+    <span class="hljs-string">"message"</span>: <span class="hljs-string">"Unauthenticated."</span>
+}</pre>
+</div></div><div data-title="Server Related Errors" class="keyline-top section contain clearfix " data-reactid="46"><div class="space-bottom8 col6 pad2x prose clip" data-reactid="47"><h3 id="server-related-errors">Server Related Errors</h3>
+<p>Such as thrown exceptions. Will return status <code>500</code></p>
+</div><div class="space-bottom4 col6 pad2 prose clip fill-light space-top5" data-reactid="48"><pre class='hljs'><span class="hljs-comment">// Example server related response</span>
+{
+    <span class="hljs-string">"message"</span>: <span class="hljs-string">"Error details here"</span>
+}</pre>
+</div></div><div data-title="Auth" class="keyline-top section contain clearfix " data-reactid="49"><div class="space-bottom8 col6 pad2x prose clip" data-reactid="50"><h2 id="auth">Auth</h2>
+<p>This section will help you through the signup, login and logout process.</p>
+</div></div><div data-title="CSRF Token (For browsers)" class="keyline-top section contain clearfix " data-reactid="51"><div class="space-bottom8 col6 pad2x prose clip" data-reactid="52"><h3 id="csrf-token-for-browsers">CSRF Token (For browsers)</h3>
+<p>Make a request to this endpoint first before you login</p>
+<p><strong>Request</strong></p>
+<p>NONE</p>
+</div><div class="space-bottom4 col6 pad2 prose clip fill-light space-top5" data-reactid="53"><div class='endpoint dark fill-dark round '>
+      <div class='round-left pad0y pad1x fill-lighten0 code small endpoint-method'>GET</div>
+      <div class='pad0 code small endpoint-url'>sanctum/csrf-cookie</div>
+    </div>
+<pre class='hljs'><span class="hljs-keyword">import</span> axios <span class="hljs-keyword">from</span> <span class="hljs-string">'axios'</span>;
+
+axios.get(<span class="hljs-string">'{BASE_URL}/sanctum/csrf-cookie'</span>).then(<span class="hljs-function">(<span class="hljs-params">response</span>) =&gt;</span> {
+    <span class="hljs-comment">// Login</span>
+});</pre>
+</div></div><div data-title="Login" class="keyline-top section contain clearfix " data-reactid="54"><div class="space-bottom8 col6 pad2x prose clip" data-reactid="55"><h3 id="login">Login</h3>
+<p><strong>Request</strong></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>email</code></td>
+<td>(Required) The email used for login</td>
+</tr>
+<tr>
+<td><code>password</code></td>
+<td>(Required) The password used for login</td>
+</tr>
+<tr>
+<td><code>device_name</code></td>
+<td>(Required) The device the user is using. <em>DO NOT</em> hard code this, use device generated string.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>success</code></td>
+<td>true/false</td>
+</tr>
+<tr>
+<td><code>access_token</code></td>
+<td>The token needed for Authorization. Example: <code>"Authorization": "Bearer {access_token}</code></td>
+</tr>
+</tbody>
+</table>
+<p>If this fails on validation, the message will only appear on <code>email</code> parameter.</p>
+<pre><code>{
+    "message": "The given data is invalid",
+    "errors": {
+        "email": [
+            "The username or password is incorrect"
+        ]
+    }
+}
+</code></pre>
+</div><div class="space-bottom4 col6 pad2 prose clip fill-light space-top5" data-reactid="56"><div class='endpoint dark fill-dark round '>
+      <div class='round-left pad0y pad1x fill-lighten0 code small endpoint-method'>POST</div>
+      <div class='pad0 code small endpoint-url'>api/v1/auth</div>
+    </div>
+</div></div><div data-title="Logout" class="keyline-top section contain clearfix " data-reactid="57"><div class="space-bottom8 col6 pad2x prose clip" data-reactid="58"><h3 id="logout">Logout</h3>
+<p><code>auth: required</code>  </p>
+<p><strong>Request</strong></p>
+<p>NONE</p>
+<p><strong>Response</strong></p>
+<pre><code>{
+    "success": true
+}
+</code></pre>
+</div><div class="space-bottom4 col6 pad2 prose clip fill-light space-top5" data-reactid="59"><div class='endpoint dark fill-dark round '>
+      <div class='round-left pad0y pad1x fill-lighten0 code small endpoint-method'>POST</div>
+      <div class='pad0 code small endpoint-url'>api/v1/auth/logout</div>
+    </div>
+<pre class='hljs'><span class="hljs-keyword">import</span> axios <span class="hljs-keyword">from</span> <span class="hljs-string">'axios'</span>;
+
+axios.post(<span class="hljs-string">'{BASE_URL}/api/v1/auth/logout'</span>);</pre>
+</div></div><div data-title="Signup" class="keyline-top section contain clearfix " data-reactid="60"><div class="space-bottom8 col6 pad2x prose clip" data-reactid="61"><h3 id="signup">Signup</h3>
+<p><strong>Request</strong></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>email</code></td>
+<td>(Required) New user's email address. Max length 255 chars</td>
+</tr>
+<tr>
+<td><code>first_name</code></td>
+<td>(Required) New user's first name. Max length 255 chars</td>
+</tr>
+<tr>
+<td><code>last_name</code></td>
+<td>(Required) New user's last name. Max length 255 chars</td>
+</tr>
+<tr>
+<td><code>password</code></td>
+<td>(Required) New user's password</td>
+</tr>
+<tr>
+<td><code>password_confirm</code></td>
+<td>(Required) Password confirmation, a repeat of <code>password</code> both must be the same.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong></p>
+<p>Successful signup response</p>
+<pre><code>{
+    "success": true
+}
+</code></pre>
+<p>For error validation response, see <a href="#validation-errors">Validation Errors</a></p>
+</div><div class="space-bottom4 col6 pad2 prose clip fill-light space-top5" data-reactid="62"><div class='endpoint dark fill-dark round '>
+      <div class='round-left pad0y pad1x fill-lighten0 code small endpoint-method'>POST</div>
+      <div class='pad0 code small endpoint-url'>api/v1/signup/email</div>
+    </div>
+<pre class='hljs'><span class="hljs-keyword">import</span> axios <span class="hljs-keyword">from</span> <span class="hljs-string">'axios'</span>;
+
+axios.post(<span class="hljs-string">'{BASE_URL}/api/v1/signup/email'</span>, {
+    <span class="hljs-attr">email</span>: <span class="hljs-string">'kevin@example.com'</span>,
+    <span class="hljs-attr">first_name</span>: <span class="hljs-string">'James'</span>,
+    <span class="hljs-attr">last_name</span>: <span class="hljs-string">'Bond'</span>,
+    <span class="hljs-attr">password</span>: <span class="hljs-string">'password007'</span>,
+    <span class="hljs-attr">password_confirm</span>: <span class="hljs-string">'password007'</span>,
+});</pre>
+</div></div><div data-title="AuthUser" class="keyline-top section contain clearfix " data-reactid="63"><div class="space-bottom8 col6 pad2x prose clip" data-reactid="64"><h2 id="authuser">AuthUser</h2>
+<p><code>auth: required</code></p>
+<p>Fetches the current authenticated user.  </p>
+<p><strong>Request</strong></p>
+<p>NONE</p>
+<p><strong>Response</strong></p>
+<pre><code>{
+    "success": true,
+    "user": {
+        // user info here
+    }
+}
+</code></pre>
+</div><div class="space-bottom4 col6 pad2 prose clip fill-light space-top5" data-reactid="65"><div class='endpoint dark fill-dark round '>
+      <div class='round-left pad0y pad1x fill-lighten0 code small endpoint-method'>GET</div>
+      <div class='pad0 code small endpoint-url'>api/v1/auth/user</div>
+    </div>
+<pre class='hljs'><span class="hljs-keyword">import</span> axios <span class="hljs-keyword">from</span> <span class="hljs-string">'axios'</span>;
+
+axios.get(<span class="hljs-string">'{BASE_URL}/api/v1/auth/user)</span></pre>
+</div></div><div data-title="Transactions" class="keyline-top section contain clearfix " data-reactid="66"><div class="space-bottom8 col6 pad2x prose clip" data-reactid="67"><h2 id="transactions">Transactions</h2>
+</div></div><div data-title="Create" class="keyline-top section contain clearfix " data-reactid="68"><div class="space-bottom8 col6 pad2x prose clip" data-reactid="69"><h3 id="create">Create</h3>
+<p><code>auth: required</code></p>
+<p>Creates a transaction.</p>
+<p><strong>Request</strong></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>buyer</code></td>
+<td>(Required) Either Integer or NULL. Should be present <strong>but</strong> can be null (no buyer). If <code>buyer</code> is an Integer, then it will look for the <code>User.id</code></td>
+</tr>
+<tr>
+<td><code>amount</code></td>
+<td>(Required) The transaction amount</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>success</code></td>
+<td>true</td>
+</tr>
+<tr>
+<td><code>data</code></td>
+<td>The transactions data. Returns an empty array if no data can be found</td>
+</tr>
+</tbody>
+</table>
+<p>For error validation response, see <a href="#validation-errors">Validation Errors</a></p>
+</div><div class="space-bottom4 col6 pad2 prose clip fill-light space-top5" data-reactid="70"><div class='endpoint dark fill-dark round '>
+      <div class='round-left pad0y pad1x fill-lighten0 code small endpoint-method'>POST</div>
+      <div class='pad0 code small endpoint-url'>api/v1/transactions</div>
+    </div>
+<pre class='hljs'><span class="hljs-keyword">import</span> axios <span class="hljs-keyword">from</span> <span class="hljs-string">'axios'</span>;
+
+axios.post(<span class="hljs-string">'{BASE_URL}/api/v1/transactions'</span>, {
+    <span class="hljs-attr">buyer</span>: <span class="hljs-number">1234</span>, <span class="hljs-comment">// or NULL</span>
+    <span class="hljs-attr">amount</span>: <span class="hljs-string">'123.45'</span> <span class="hljs-comment">// or 123.45</span>
+});</pre>
+</div></div><div data-title="Fetch Many" class="keyline-top section contain clearfix " data-reactid="71"><div class="space-bottom8 col6 pad2x prose clip" data-reactid="72"><h3 id="fetch-many">Fetch Many</h3>
+<p><code>auth: required</code></p>
+<p>Fetches all transactions of the seller. The response JSON is paginated.</p>
+<p><strong>Request</strong></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>page[size]</code></td>
+<td>Number of items to display per page</td>
+</tr>
+<tr>
+<td><code>page[number]</code></td>
+<td>The page number you want to jump to. Defaults to page 1</td>
+</tr>
+<tr>
+<td><code>include</code></td>
+<td>A comma separated value of related data. Values allowed are: <code>buyer</code>, <code>seller</code> and <code>payment</code>. Returns <code>null</code> if nothing is associated</td>
+</tr>
+<tr>
+<td><code>sort</code></td>
+<td>The attribute of which to sort by. Values allowed are: <code>created_at</code> and <code>updated_at</code>. By default it is <code>ASC</code>, to use <code>DESC</code> just prefix the value with <code>-</code> dash symbol. Example: <code>-created_at</code> will apply <code>created_at DESC</code>. Default: <code>-updated_at</code></td>
+</tr>
+<tr>
+<td><code>filter[of_buyer]</code></td>
+<td>If you want to only show transactions of a specific buyer. Example: <code>filter[of_buyer]=BUYER_HASH_ID_HERE</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>data</code></td>
+<td>The transactions data. Returns an empty array if no data can be found</td>
+</tr>
+<tr>
+<td><code>links</code></td>
+<td>The pagination links</td>
+</tr>
+<tr>
+<td><code>meta</code></td>
+<td>The metadata of the result set. Current page, last page, total, etc..</td>
+</tr>
+</tbody>
+</table>
+</div><div class="space-bottom4 col6 pad2 prose clip fill-light space-top5" data-reactid="73"><div class='endpoint dark fill-dark round '>
+      <div class='round-left pad0y pad1x fill-lighten0 code small endpoint-method'>GET</div>
+      <div class='pad0 code small endpoint-url'>api/v1/transactions</div>
+    </div>
+<pre class='hljs'><span class="hljs-keyword">import</span> axios <span class="hljs-keyword">from</span> <span class="hljs-string">'axios'</span>;
+
+<span class="hljs-keyword">const</span> qs = required(<span class="hljs-string">'query-string'</span>);
+<span class="hljs-keyword">const</span> props = qs.stringify({
+    <span class="hljs-attr">page</span>: {
+        <span class="hljs-attr">size</span>: <span class="hljs-number">15</span>, <span class="hljs-comment">// 15 transactions per page</span>
+        <span class="hljs-attr">number</span>: <span class="hljs-number">2</span> <span class="hljs-comment">// Show page 2</span>
+    },
+
+    <span class="hljs-attr">include</span>: <span class="hljs-string">'buyer,payment'</span>, <span class="hljs-comment">// Get associated buyer and seller</span>
+
+    <span class="hljs-attr">sort</span>: <span class="hljs-string">'-created_at'</span>, <span class="hljs-comment">// created_at DESC</span>
+
+    <span class="hljs-attr">filter</span>: {
+        <span class="hljs-attr">of_buyer</span>: <span class="hljs-string">'BUYER_HASH_ID'</span> <span class="hljs-comment">// Will only show transactions for a specific buyer</span>
+    }
+});
+
+axios.get(<span class="hljs-string">`{BASE_URL}/api/v1/transactions<span class="hljs-subst">${props}</span>`</span>);</pre>
+</div></div><div data-title="Fetch One" class="keyline-top section contain clearfix " data-reactid="74"><div class="space-bottom8 col6 pad2x prose clip" data-reactid="75"><h3 id="fetch-one">Fetch One</h3>
+<p>Fetches a single transaction by its {hash_id}  </p>
+<p><strong>Request</strong></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>include</code></td>
+<td>A comma separated value of related data. Values allowed are: <code>buyer</code>, <code>seller</code> and <code>payment</code>. Returns <code>null</code> if nothing is associated</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>success</code></td>
+<td>true</td>
+</tr>
+<tr>
+<td><code>data</code></td>
+<td>The transactions data. Returns an empty array if no data can be found</td>
+</tr>
+</tbody>
+</table>
+<p>Fetching a single transaction has two conditions before you can access the resource. These are:  </p>
+<ul>
+<li>If buyer is <strong>NULL</strong>, the transaction can be accessed both publicly and privately</li>
+<li>If buyer is <strong>NOT NULL</strong>, only the seller and buyer can view the resource</li>
+</ul>
+</div><div class="space-bottom4 col6 pad2 prose clip fill-light space-top5" data-reactid="76"><div class='endpoint dark fill-dark round '>
+      <div class='round-left pad0y pad1x fill-lighten0 code small endpoint-method'>GET</div>
+      <div class='pad0 code small endpoint-url'>apit/v1/transactions/<span class="strong">{hash_id}</span></div>
+    </div>
+<pre class='hljs'><span class="hljs-keyword">import</span> axios <span class="hljs-keyword">from</span> <span class="hljs-string">'axios'</span>;
+
+axios.get(<span class="hljs-string">'{BASE_URL}/api/v1/transactions/{hash_id}'</span>).then((response) {
+    <span class="hljs-built_in">console</span>.log(response.data.transaction);
+});</pre>
+</div></div><div data-title="Update" class="keyline-top section contain clearfix " data-reactid="77"><div class="space-bottom8 col6 pad2x prose clip" data-reactid="78"><h3 id="update">Update</h3>
+<p><code>auth: required</code></p>
+<p>Updates a transaction. Where {hash_id} is the transaction ID. Parameters are optional although if present, it will run validation process.</p>
+<p><strong>Request</strong></p>
+<p>There are two conditions before updating buyer:</p>
+<ul>
+<li>If buyer is <strong>NULL</strong>, you can update it.</li>
+<li>If buyer is <strong>NOT NULL</strong> (means it already has a buyer), you <strong>CANNOT</strong> update it.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>buyer</code></td>
+<td>(Optional) Either Integer or NULL. If Integer, it should be the <code>User.id</code> of buyer</td>
+</tr>
+<tr>
+<td><code>amount</code></td>
+<td>(Optional) Numeric. Minimum value: 200</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>success</code></td>
+<td>true</td>
+</tr>
+<tr>
+<td><code>data</code></td>
+<td>The transactions data. Returns an empty array if no data can be found</td>
+</tr>
+</tbody>
+</table>
+</div><div class="space-bottom4 col6 pad2 prose clip fill-light space-top5" data-reactid="79"><div class='endpoint dark fill-dark round '>
+      <div class='round-left pad0y pad1x fill-lighten0 code small endpoint-method'>PUT/PATCH</div>
+      <div class='pad0 code small endpoint-url'>api/v1/transactions/<span class="strong">{hash_id}</span></div>
+    </div>
+<pre class='hljs'><span class="hljs-keyword">import</span> axios <span class="hljs-keyword">from</span> <span class="hljs-string">'axios'</span>;
+
+axios.put(<span class="hljs-string">'{BASE_URL}/api/v1/transactions/{hash_id}'</span>, {
+    <span class="hljs-comment">// This only updates the amount</span>
+    <span class="hljs-attr">amount</span>: <span class="hljs-number">123.45</span>
+});</pre>
+</div></div><div data-title="Delete" class="keyline-top section contain clearfix " data-reactid="80"><div class="space-bottom8 col6 pad2x prose clip" data-reactid="81"><h3 id="delete">Delete</h3>
+<p><code>auth: required</code></p>
+<p>Deletes a transaction. Where {hash_id} is the transaction ID.
+This endpoint does not require any request body.</p>
+<p><strong>Response</strong></p>
+<pre><code>{
+    "success": true
+}
+</code></pre>
+</div><div class="space-bottom4 col6 pad2 prose clip fill-light space-top5" data-reactid="82"><div class='endpoint dark fill-dark round '>
+      <div class='round-left pad0y pad1x fill-lighten0 code small endpoint-method'>DELETE</div>
+      <div class='pad0 code small endpoint-url'>api/v1/transactions/<span class="strong">{hash_id}</span></div>
+    </div>
+<pre class='hljs'><span class="hljs-keyword">import</span> axios <span class="hljs-keyword">from</span> <span class="hljs-string">'axios'</span>;
+
+axios.delete(<span class="hljs-string">'{BASE_URL}/api/v1/transactions/{hash_id}'</span>);</pre>
+</div></div><div data-title="TransactionPayments" class="keyline-top section contain clearfix " data-reactid="83"><div class="space-bottom8 col6 pad2x prose clip" data-reactid="84"><h2 id="transactionpayments">TransactionPayments</h2>
+</div></div><div data-title="Read Many" class="keyline-top section contain clearfix " data-reactid="85"><div class="space-bottom8 col6 pad2x prose clip" data-reactid="86"><h3 id="read-many">Read Many</h3>
+<p><code>auth:required</code></p>
+<p>This fetches all payments made by the user</p>
+<p><strong>Request</strong></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>page[size]</code></td>
+<td>Number of items to display per page</td>
+</tr>
+<tr>
+<td><code>page[number]</code></td>
+<td>The page number you want to jump to. Defaults to page 1</td>
+</tr>
+<tr>
+<td><code>include</code></td>
+<td>A comma separated value of related data. The only allowed value is <code>transaction</code></td>
+</tr>
+<tr>
+<td><code>sort</code></td>
+<td>The attribute of which to sort by. Values allowed are: <code>created_at</code> and <code>updated_at</code>. By default it is <code>ASC</code>, to use <code>DESC</code> just prefix the value with <code>-</code> dash symbol. Example: <code>-created_at</code> will apply <code>created_at DESC</code>. Default: <code>-updated_at</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>data</code></td>
+<td>The transactions data. Returns an empty array if no data can be found</td>
+</tr>
+<tr>
+<td><code>links</code></td>
+<td>The pagination links</td>
+</tr>
+<tr>
+<td><code>meta</code></td>
+<td>The metadata of the result set. Current page, last page, total, etc..</td>
+</tr>
+</tbody>
+</table>
+</div><div class="space-bottom4 col6 pad2 prose clip fill-light space-top5" data-reactid="87"><div class='endpoint dark fill-dark round '>
+      <div class='round-left pad0y pad1x fill-lighten0 code small endpoint-method'>GET</div>
+      <div class='pad0 code small endpoint-url'>api/v1/transaction/payments</div>
+    </div>
+</div></div><div data-title="Read Single" class="keyline-top section contain clearfix " data-reactid="88"><div class="space-bottom8 col6 pad2x prose clip" data-reactid="89"><h3 id="read-single">Read Single</h3>
+<p><code>auth:required</code></p>
+<p>Get a buyer's payment information</p>
+<p><strong>Request</strong></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>include</code></td>
+<td>A comma separated value of related data. The only allowed value is <code>transaction</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>success</code></td>
+<td>true</td>
+</tr>
+<tr>
+<td><code>data</code></td>
+<td>The transactions data. Returns an empty array if no data can be found</td>
+</tr>
+</tbody>
+</table>
+</div><div class="space-bottom4 col6 pad2 prose clip fill-light space-top5" data-reactid="90"><div class='endpoint dark fill-dark round '>
+      <div class='round-left pad0y pad1x fill-lighten0 code small endpoint-method'>GET</div>
+      <div class='pad0 code small endpoint-url'>api/v1/transaction/payment/<span class="strong">{hash_id}</span></div>
+    </div>
+</div></div><div data-title="Users" class="keyline-top section contain clearfix " data-reactid="91"><div class="space-bottom8 col6 pad2x prose clip" data-reactid="92"><h2 id="users">Users</h2>
+</div></div><div data-title="Fetch One" class="keyline-top section contain clearfix " data-reactid="93"><div class="space-bottom8 col6 pad2x prose clip" data-reactid="94"><h3 id="fetch-one-1">Fetch One</h3>
+<p><code>auth: required</code></p>
+<p>This fetches a user's information</p>
+<p><strong>Request</strong></p>
+<p>NONE</p>
+<p><strong>Response</strong></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>success</code></td>
+<td>true</td>
+</tr>
+<tr>
+<td><code>data</code></td>
+<td>The user's data. Returns an empty array if no data can be found</td>
+</tr>
+</tbody>
+</table>
+</div><div class="space-bottom4 col6 pad2 prose clip fill-light space-top5" data-reactid="95"><div class='endpoint dark fill-dark round '>
+      <div class='round-left pad0y pad1x fill-lighten0 code small endpoint-method'>GET</div>
+      <div class='pad0 code small endpoint-url'>api/v1/users/<span class="strong">{hash_id}</span></div>
+    </div>
+<pre class='hljs'><span class="hljs-keyword">import</span> axios <span class="hljs-keyword">from</span> <span class="hljs-string">'axios'</span>;
+
+axios.delete(<span class="hljs-string">'{BASE_URL}/api/v1/users/{hash_id}'</span>);</pre>
+</div></div><div data-title="User - Transactions" class="keyline-top section contain clearfix " data-reactid="96"><div class="space-bottom8 col6 pad2x prose clip" data-reactid="97"><h2 id="user---transactions">User - Transactions</h2>
+<p><code>auth: required</code></p>
+<p>Getting the user's transactions</p>
+<p><strong>Request</strong></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>page[size]</code></td>
+<td>Number of items to display per page</td>
+</tr>
+<tr>
+<td><code>page[number]</code></td>
+<td>The page number you want to jump to. Defaults to page 1</td>
+</tr>
+<tr>
+<td><code>include</code></td>
+<td>A comma separated value of related data. Values allowed are: <code>buyer</code>, <code>seller</code> and <code>payment</code>. Returns <code>null</code> if nothing is associated</td>
+</tr>
+<tr>
+<td><code>sort</code></td>
+<td>The attribute of which to sort by. Values allowed are: <code>amount</code>, <code>created_at</code> and <code>updated_at</code>. By default it is <code>ASC</code>, to use <code>DESC</code> just prefix the value with <code>-</code> dash symbol. Example: <code>-created_at</code> will apply <code>created_at DESC</code>. Default: <code>-updated_at</code></td>
+</tr>
+<tr>
+<td><code>as</code></td>
+<td>This property determines if you want to get the user's transaction as a <code>buyer</code> or <code>seller</code>. Default: <code>seller</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>data</code></td>
+<td>The transactions data. Returns an empty array if no data can be found</td>
+</tr>
+<tr>
+<td><code>links</code></td>
+<td>The pagination links</td>
+</tr>
+<tr>
+<td><code>meta</code></td>
+<td>The metadata of the result set. Current page, last page, total, etc..</td>
+</tr>
+</tbody>
+</table>
+</div><div class="space-bottom4 col6 pad2 prose clip fill-light space-top5" data-reactid="98"><div class='endpoint dark fill-dark round '>
+      <div class='round-left pad0y pad1x fill-lighten0 code small endpoint-method'>GET</div>
+      <div class='pad0 code small endpoint-url'>/api/v1/user/<span class="strong">{hash_id}</span>/transactions</div>
+    </div>
+<pre class='hljs'><span class="hljs-keyword">import</span> axios <span class="hljs-keyword">from</span> <span class="hljs-string">'axios'</span>;
+
+<span class="hljs-keyword">const</span> qs = required(<span class="hljs-string">'query-string'</span>);
+<span class="hljs-keyword">const</span> props = qs.stringify({
+    <span class="hljs-attr">page</span>: {
+        <span class="hljs-attr">size</span>: <span class="hljs-number">15</span>, <span class="hljs-comment">// 15 transactions per page</span>
+        <span class="hljs-attr">number</span>: <span class="hljs-number">2</span> <span class="hljs-comment">// Show page 2</span>
+    },
+
+    <span class="hljs-attr">include</span>: <span class="hljs-string">'buyer,payment'</span>, <span class="hljs-comment">// Get associated buyer and seller</span>
+
+    <span class="hljs-attr">sort</span>: <span class="hljs-string">'amount'</span>, <span class="hljs-comment">// amount ASC</span>
+
+    <span class="hljs-attr">as</span>: <span class="hljs-string">'seller'</span> <span class="hljs-comment">// Get transactions of user as a seller</span>
+});
+
+axios.get(<span class="hljs-string">`{BASE_URL}/api/v1/user/{hash_id}/transactions/<span class="hljs-subst">${props}</span>`</span>);</pre>
+</div></div><div data-title="Transaction - Logs" class="keyline-top section contain clearfix " data-reactid="99"><div class="space-bottom8 col6 pad2x prose clip" data-reactid="100"><h2 id="transaction---logs">Transaction - Logs</h2>
+<p><code>auth: required</code></p>
+<p>Gets the logs in a transaction</p>
+<p><strong>Request</strong></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>page[size]</code></td>
+<td>Number of items to display per page</td>
+</tr>
+<tr>
+<td><code>page[number]</code></td>
+<td>The page number you want to jump to. Defaults to page 1</td>
+</tr>
+<tr>
+<td><code>include</code></td>
+<td>A comma separated value of related data. The only allowed value is <code>transaction</code></td>
+</tr>
+<tr>
+<td><code>sort</code></td>
+<td>The attribute of which to sort by. Values allowed are: <code>created_at</code> and <code>updated_at</code>. By default it is <code>ASC</code>, to use <code>DESC</code> just prefix the value with <code>-</code> dash symbol. Example: <code>-created_at</code> will apply <code>created_at DESC</code>. Default: <code>-updated_at</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>data</code></td>
+<td>The transactions data. Returns an empty array if no data can be found</td>
+</tr>
+<tr>
+<td><code>links</code></td>
+<td>The pagination links</td>
+</tr>
+<tr>
+<td><code>meta</code></td>
+<td>The metadata of the result set. Current page, last page, total, etc..</td>
+</tr>
+</tbody>
+</table>
+</div><div class="space-bottom4 col6 pad2 prose clip fill-light space-top5" data-reactid="101"><div class='endpoint dark fill-dark round '>
+      <div class='round-left pad0y pad1x fill-lighten0 code small endpoint-method'>GET</div>
+      <div class='pad0 code small endpoint-url'>api/v1/transaction/<span class="strong">{hash_id}</span>/logs</div>
+    </div>
+<pre class='hljs'><span class="hljs-keyword">import</span> axios <span class="hljs-keyword">from</span> <span class="hljs-string">'axios'</span>;
+
+<span class="hljs-keyword">const</span> qs = required(<span class="hljs-string">'query-string'</span>);
+<span class="hljs-keyword">const</span> props = qs.stringify({
+    <span class="hljs-attr">page</span>: {
+        <span class="hljs-attr">size</span>: <span class="hljs-number">15</span>, <span class="hljs-comment">// 15 transactions per page</span>
+        <span class="hljs-attr">number</span>: <span class="hljs-number">2</span> <span class="hljs-comment">// Show page 2</span>
+    },
+
+    <span class="hljs-attr">include</span>: <span class="hljs-string">'transaction'</span>, <span class="hljs-comment">// Get associated transaction</span>
+
+    <span class="hljs-attr">sort</span>: <span class="hljs-string">'-created_at'</span>, <span class="hljs-comment">// created_at DESC</span>
+});
+
+axios.get(<span class="hljs-string">`{BASE_URL}/api/v1/user/{hash_id}/transactions/<span class="hljs-subst">${props}</span>`</span>);</pre>
+</div></div><div data-title="Paypal" class="keyline-top section contain clearfix " data-reactid="102"><div class="space-bottom8 col6 pad2x prose clip" data-reactid="103"><h2 id="paypal">Paypal</h2>
+<p>There's a <code>{BASE_URL}/test-paypal</code> where you can test Paypal payment.</p>
+<p>To get started, first we need to inject this script:<br>
+<code>&#x3C;script src="https://www.paypal.com/sdk/js?client-id={{ env('PAYPAL_CLIENT_ID') }}&#x26;currency=PHP>&#x3C;/script></code>  </p>
+<p>Note that we need to add <code>&#x26;currency=PHP</code></p>
+<p>Read more:</p>
+<ul>
+<li><a href="https://developer.paypal.com/docs/checkout/integrate">https://developer.paypal.com/docs/checkout/integrate</a></li>
+<li><a href="https://developer.paypal.com/docs/checkout/reference/customize-sdk">https://developer.paypal.com/docs/checkout/reference/customize-sdk</a></li>
+</ul>
+</div></div><div data-title="Create Order" class="keyline-top section contain clearfix " data-reactid="104"><div class="space-bottom8 col6 pad2x prose clip" data-reactid="105"><h3 id="create-order">Create Order</h3>
+<p><code>auth: required</code></p>
+<p>This creates a paypal order.<br>
+Make sure you return a promise on <code>createOrder()</code> callback and return paypal_order_id on <code>Promise.then()</code>.  </p>
+<p>You can use either native <code>fetch()</code> or <code>axios</code>.</p>
+<p><strong>Request</strong></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>transaction</code></td>
+<td>(Required) The transaction id</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong></p>
+<pre><code>{
+    "success": true,
+    "paypal_order_id": "ABC123DEF456"
+}
+</code></pre>
+</div><div class="space-bottom4 col6 pad2 prose clip fill-light space-top5" data-reactid="106"><div class='endpoint dark fill-dark round '>
+      <div class='round-left pad0y pad1x fill-lighten0 code small endpoint-method'>POST</div>
+      <div class='pad0 code small endpoint-url'>/api/v1/transaction/payment/paypal/create</div>
+    </div>
+<pre class='hljs'>paypal.Buttons({
+    <span class="hljs-attr">createOrder</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">return</span> axios.post(<span class="hljs-string">'{BASE_URL}/api/v1/transaction/payment/paypal/create'</span>, {
+            <span class="hljs-attr">transaction</span>: <span class="hljs-number">1234</span>
+        }).then(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">response</span>) </span>{
+            <span class="hljs-comment">// This is very important!</span>
+            <span class="hljs-comment">// because paypal will pass this to onApprove() callback</span>
+            <span class="hljs-keyword">return</span> response.data.paypal_order_id
+        });
+    }
+}).render(<span class="hljs-string">'#paypal-button-container'</span>);</pre>
+</div></div><div data-title="Capture Payment" class="keyline-top section contain clearfix " data-reactid="107"><div class="space-bottom8 col6 pad2x prose clip" data-reactid="108"><h3 id="capture-payment">Capture Payment</h3>
+<p><code>auth: required</code></p>
+<p>This captures the paypal payment.<br>
+You need to make sure to return a <code>Promise</code></p>
+<p><strong>Requests</strong></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>transaction</code></td>
+<td>(Required) The transaction id</td>
+</tr>
+<tr>
+<td><code>order_id</code></td>
+<td>(Required) The Paypal order id. You can get this on the first parameter of <code>onApprove()</code> callback</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong></p>
+<pre><code>{
+    "success": true,
+    "transaction": {
+        // Returns the updated transaction information
+        // 'payment' will also be added in this property,
+        // it will contain all the Paypal payment information
+    }
+}
+</code></pre>
+</div><div class="space-bottom4 col6 pad2 prose clip fill-light space-top5" data-reactid="109"><div class='endpoint dark fill-dark round '>
+      <div class='round-left pad0y pad1x fill-lighten0 code small endpoint-method'>POST</div>
+      <div class='pad0 code small endpoint-url'>/api/v1/transaction/payment/paypal/capture</div>
+    </div>
+<pre class='hljs'>paypal.Buttons({
+    <span class="hljs-attr">createOrder</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-comment">// Create order</span>
+    },
+
+    <span class="hljs-comment">/**
+     * If the user paid the order, capture it
+     */</span>
+    <span class="hljs-attr">onApprove</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">data</span>) </span>{
+        <span class="hljs-comment">// data will contain some information from paypal</span>
+
+        <span class="hljs-keyword">return</span> axios.post(<span class="hljs-string">'{BASE_URL}api/v1/transaction/payment/paypal/capture'</span>, {
+            <span class="hljs-attr">transaction</span>: <span class="hljs-number">1234</span>,
+            <span class="hljs-attr">order_id</span>: data.orderID
+        }).then(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">response</span>) </span>{
+            printLog(<span class="hljs-string">'[4.1] Successful payment'</span>);
+            <span class="hljs-comment">/**
+             * Do whatever you want sa response data
+             * expected response
+             * {
+             *     success: true,
+             *     transaction: {...}
+             * }
+             */</span>
+        });
+    }
+}).render(<span class="hljs-string">'#paypal-button-container'</span>);</pre>
+</div></div><div data-title="Cancel Payment" class="keyline-top section contain clearfix " data-reactid="110"><div class="space-bottom8 col6 pad2x prose clip" data-reactid="111"><h3 id="cancel-payment">Cancel Payment</h3>
+<p><code>auth: required</code></p>
+<p>We need to make a HTTP request if the user cancels so we can log it on our server.</p>
+<p><strong>Request</strong></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>transaction</code></td>
+<td>(Required) The transaction id</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong></p>
+<pre><code>{
+    "success": true
+}
+</code></pre>
+</div><div class="space-bottom4 col6 pad2 prose clip fill-light space-top5" data-reactid="112"><div class='endpoint dark fill-dark round '>
+      <div class='round-left pad0y pad1x fill-lighten0 code small endpoint-method'>POST</div>
+      <div class='pad0 code small endpoint-url'>/api/v1/transaction/payment/paypal/cancel</div>
+    </div>
+<pre class='hljs'>paypal.Buttons({
+    <span class="hljs-attr">createOrder</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-comment">// Create order</span>
+    },
+
+    <span class="hljs-attr">onApprove</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">data</span>) </span>{
+        <span class="hljs-comment">// Capture payment</span>
+    },
+
+    <span class="hljs-comment">/**
+     * If the user cancels the payment, this callback will be fired
+     */</span>
+    <span class="hljs-attr">onCancel</span>: <span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">data</span>) </span>{
+        <span class="hljs-comment">// Paypal doesn't actually require us to send a cancel request</span>
+        <span class="hljs-comment">// This is just to add a log on our end</span>
+        <span class="hljs-keyword">await</span> axios.post(<span class="hljs-string">'&lt;?= url('</span>api/v1/transaction/payment/paypal/cancel<span class="hljs-string">') ?&gt;'</span>, {
+            <span class="hljs-attr">transaction</span>: <span class="hljs-number">1</span>
+        });
+
+        <span class="hljs-comment">// Do whatever you want here if the user cancels payment</span>
+    }
+}).render(<span class="hljs-string">'#paypal-button-container'</span>);</pre>
+</div></div></div></div></div><div class="fixed-top space-left16" data-reactid="113"><div class="events fill-light bottom-shadow pad1 col6 pin-topright  " data-reactid="114"><div class="space-right1 small quiet inline" data-reactid="115">Show examples in:</div><div class="rounded-toggle inline short" data-reactid="116"><a class="strong active" data-reactid="117">JS</a></div><div class="fr pad0" data-reactid="118"><a title="Display as 1 column" style="cursor:pointer;" class="icon quiet caret-left pad0 fill-darken0 round" data-reactid="119"></a></div></div></div><div class="fill-dark dark bottom-shadow fixed-top pad0 width16" data-reactid="120"><a href="/" class="active space-top1 space-left1 pin-topleft icon round dark pad0 fill-red" data-reactid="121"></a><div class="strong small pad0
+          
+          space-left4 line-height15" data-reactid="122">ELUTRADE API Documentation</div></div></div></div><!--STOP-->
+    <script src='bundle.js'></script>
+  </body>
+</html>
