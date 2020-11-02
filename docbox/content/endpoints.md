@@ -1,6 +1,24 @@
 ## Auth
 This section will help you through the signup, login and logout process.
 
+### CSRF Token (For browsers)
+```endpoint
+GET sanctum/csrf-cookie
+```
+```javascript
+import axios from 'axios';
+
+axios.get('{BASE_URL}/sanctum/csrf-cookie').then((response) => {
+    // Login
+});
+```
+Make a request to this endpoint first before you login
+
+**Request**
+
+NONE
+
+
 ### Login
 ```endpoint
 POST api/v1/auth
