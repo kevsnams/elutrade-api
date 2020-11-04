@@ -10,22 +10,24 @@ class Paymongo extends Payment
 {
     public static function gcash(Transaction $transaction)
     {
-        if (!$transaction->buyer instanceof User) {
+        self::checkTransaction($transaction);
+        return (new Source('gcash', $transaction))->send();
+    }
+
+    public static function grabPay(Transaction $transaction)
+    {
+        self::checkTransaction($transaction);
+        return (new Source('grab_pay', $transaction))->send();
+    }
+
+    private static function checkTransaction(Transaction $transaction) : void
+    {
+        if (is_null($transaction->buyer)) {
             throw new Exception('This transaction must have a buyer');
         }
 
-        $source = new Source('gcash', self::createBasicAuth());
-        /** TODO maybe modify transaction_payments to use a single unified JSON column */
-    }
-
-
-    private static function createBasicAuth()
-    {
-        return base64_decode(
-            implode(':', [
-                config('paymongo.keys.public'),
-                config('paymongo.keys.private')
-            ])
-        );
+        if (!is_null($transaction->payment)) {
+            throw new Exception('This transaction already has a payment');
+        }
     }
 }

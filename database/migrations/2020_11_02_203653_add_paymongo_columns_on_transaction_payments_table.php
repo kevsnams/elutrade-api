@@ -14,7 +14,8 @@ class AddPaymongoColumnsOnTransactionPaymentsTable extends Migration
     public function up()
     {
         Schema::table('transaction_payments', function (Blueprint $table) {
-            // TODO
+            $table->string('paymongo_source_id')->nullable()->after('paypal_response_json');
+            $table->string('paymongo_payment_id')->nullable()->after('paymongo_source_id');
         });
     }
 

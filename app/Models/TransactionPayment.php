@@ -14,6 +14,8 @@ class TransactionPayment extends Model
     use HasFactory, HasHashid, HashidRouting;
 
     const MODE_PAYPAL = 1;
+    const MODE_PAYMONGO_GCASH = 2;
+    const MODE_PAYMONGO_GRABPAY = 3;
 
     protected $appends = [
         'paypal_response', 'hash_id'

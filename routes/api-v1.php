@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\v1\UserController;
 use App\Http\Controllers\v1\AuthController;
+use App\Http\Controllers\v1\Payment\PaymongoController;
 use App\Http\Controllers\v1\Payment\PaypalController;
 use App\Http\Controllers\v1\SignupController;
 use App\Http\Controllers\v1\TransactionController;
@@ -36,6 +37,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/create', [PaypalController::class, 'postCreate']);
         Route::post('/capture', [PaypalController::class, 'postCapture']);
         Route::post('/cancel', [PaypalController::class, 'postCancel']);
+    });
+
+    Route::prefix('/transaction/payment/paymongo')->group(function () {
+        Route::post('/gcash', [PaymongoController::class, 'gcash']);
+        Route::post('/grab-pay', [PaymongoController::class, 'grabPay']);
     });
 
     Route::get('user/{id}/transactions', [UserController::class, 'transactions']);
