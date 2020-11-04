@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\TransactionIndexRequest;
 use App\Http\Requests\TransactionLogsRequest;
 use App\Http\Requests\TransactionShowRequest;
+use App\Http\Requests\TransactionStoreRequest;
 use App\Http\Resources\ApiCollection;
 use App\Http\Resources\ApiResource;
 use App\Models\Transaction;
@@ -51,20 +52,8 @@ class TransactionController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(TransactionStoreRequest $request)
     {
-        $request->validate([
-            'buyer' => [
-                'present',
-                'nullable',
-                'exists:users,id'
-            ],
-
-            'amount' => [
-                'required', 'numeric', 'min:200'
-            ]
-        ]);
-
         $transaction = new Transaction();
 
         $transaction->seller_user_id = $request->user()->id;

@@ -48,13 +48,13 @@ class Transaction extends Model
 
     public function scopeOfSeller(Builder $query, $id)
     {
-        $id = is_string($id) ? Hashids::decode($id)[0] : $id;
+        $id = is_string($id) ? (Hashids::decode($id)[0] ?? null) : $id;
         return $query->where('seller_user_id', $id);
     }
 
     public function scopeOfBuyer(Builder $query, $id)
     {
-        $id = is_string($id) ? Hashids::decode($id)[0] : $id;
+        $id = is_string($id) ? (Hashids::decode($id)[0] ?? null ) : $id;
         return $query->where('buyer_user_id', $id);
     }
 

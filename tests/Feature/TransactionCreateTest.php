@@ -118,7 +118,7 @@ class TransactionCreateTest extends BaseTestCase
         );
 
         $http = $this->requestJsonApi('api/v1/transactions', [
-            'buyer' => 9999,
+            'buyer' => '9999',
             'amount' => 420.69
         ], 'POST');
 
@@ -138,7 +138,7 @@ class TransactionCreateTest extends BaseTestCase
         $buyer = User::factory()->create();
 
         $http = $this->requestJsonApi('api/v1/transactions', [
-            'buyer' => $buyer->id,
+            'buyer' => $buyer->hashid(),
             'amount' => 420.69
         ], 'POST');
 

@@ -148,7 +148,7 @@ Creates a transaction.
 import axios from 'axios';
 
 axios.post('{BASE_URL}/api/v1/transactions', {
-    buyer: 1234, // or NULL
+    buyer: 'bUy3rH4sh1d', // or NULL
     amount: '123.45' // or 123.45
 });
 ```
@@ -157,7 +157,7 @@ axios.post('{BASE_URL}/api/v1/transactions', {
 
 Property | Description
 ---|---
-`buyer` | (Required) Either Integer or NULL. Should be present **but** can be null (no buyer). If `buyer` is an Integer, then it will look for the `User.id`
+`buyer` | (Required) Either hash_id string or NULL. Should be present **but** can be null (no buyer). If `buyer` is a hash_id string, then it will look for the `User`
 `amount` | (Required) The transaction amount
 
 **Response**
@@ -275,7 +275,7 @@ There are two conditions before updating buyer:
 
 Property | Description
 ---|---
-`buyer` | (Optional) Either Integer or NULL. If Integer, it should be the `User.id` of buyer
+`buyer` | (Required) Either hash_id string or NULL. Should be present **but** can be null (no buyer). If `buyer` is a hash_id string, then it will look for the `User`
 `amount` | (Optional) Numeric. Minimum value: 200
 
 **Response**
