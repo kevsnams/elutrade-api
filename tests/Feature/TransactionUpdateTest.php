@@ -26,7 +26,7 @@ class TransactionUpdateTest extends BaseTestCase
         Sanctum::actingAs($transaction->seller, ['*']);
 
         $http = $this->requestJsonApi('api/v1/transactions/'. $transaction->hash_id, [
-            'buyer' => $buyer->id
+            'buyer' => $buyer->hashid()
         ], 'PUT');
 
         $http['response']->assertSuccessful();
@@ -42,7 +42,7 @@ class TransactionUpdateTest extends BaseTestCase
         Sanctum::actingAs($transaction->seller, ['*']);
 
         $http = $this->requestJsonApi('api/v1/transactions/'. $transaction->hash_id, [
-            'buyer' => $buyer->id
+            'buyer' => $buyer->hashid()
         ], 'PUT');
 
         $http['response']->assertStatus(422);
@@ -60,7 +60,7 @@ class TransactionUpdateTest extends BaseTestCase
         Sanctum::actingAs($notSeller, ['*']);
 
         $http = $this->requestJsonApi('api/v1/transactions/'. $transaction->hash_id, [
-            'buyer' => $buyer->id
+            'buyer' => $buyer->hashid()
         ], 'PUT');
 
         $http['response']->assertStatus(401);

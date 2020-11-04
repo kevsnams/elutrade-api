@@ -7,6 +7,7 @@ use App\Http\Requests\TransactionIndexRequest;
 use App\Http\Requests\TransactionLogsRequest;
 use App\Http\Requests\TransactionShowRequest;
 use App\Http\Requests\TransactionStoreRequest;
+use App\Http\Requests\TransactionUpdateRequest;
 use App\Http\Resources\ApiCollection;
 use App\Http\Resources\ApiResource;
 use App\Models\Transaction;
@@ -98,21 +99,11 @@ class TransactionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(TransactionUpdateRequest $request, $id)
     {
         $transaction = Transaction::with(['buyer', 'seller'])
             ->ofSeller($request->user()->id)
             ->findByHashid($id);
-
-        $request->validate([
-            'buyer' => [
-                'sometimes', 'nullable', 'integer', 'exists:users,id'
-            ],
-
-            'amount' => [
-                'sometimes', 'numeric', 'min:200'
-            ]
-        ]);
 
         if (!$transaction) {
             throw new AuthenticationException();
