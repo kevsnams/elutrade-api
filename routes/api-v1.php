@@ -44,6 +44,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/grab-pay', [PaymongoController::class, 'grabPay']);
     });
 
+    Route::prefix('/paymongo/webhooks')->group(function () {
+        Route::post('/source-chargeable', [PaymongoController::class, 'sourceChargeable']);
+    });
+
     Route::get('user/{id}/transactions', [UserController::class, 'transactions']);
     Route::get('transaction/{id}/logs', [TransactionController::class, 'logs']);
 });

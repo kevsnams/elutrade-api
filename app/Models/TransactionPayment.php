@@ -26,7 +26,7 @@ class TransactionPayment extends Model
     ];
 
     protected $fillable = [
-        'mode', 'paypal_order_id', 'paypal_response'
+        'mode', 'paypal_order_id', 'paypal_response', 'paymongo_source_id'
     ];
 
     public function transaction()

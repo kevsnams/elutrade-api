@@ -32,7 +32,7 @@ class Source
 
     public function send()
     {
-        return Http::withBasicAuth(config('paymongo.keys.private'), null)
+        return Http::withBasicAuth(config('paymongo.keys.private'), '')
             ->post(Source::ENDPOINT, [
                 'data' => $this->data
             ]);
