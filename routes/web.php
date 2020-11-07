@@ -26,3 +26,8 @@ Route::get('/test-paypal', function () {
 Route::prefix('dev')->group(function() {
     Route::get('playground', [DevController::class, 'playground'])->name('dev.playground');
 });
+
+
+Route::prefix('/paymongo/webhooks')->group(function () {
+    Route::post('/source-chargeable', [PaymongoController::class, 'sourceChargeable']);
+});
