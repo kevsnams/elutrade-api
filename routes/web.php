@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DevController;
+use App\Http\Controllers\v1\Payment\PaymongoController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -26,7 +27,6 @@ Route::get('/test-paypal', function () {
 Route::prefix('dev')->group(function() {
     Route::get('playground', [DevController::class, 'playground'])->name('dev.playground');
 });
-
 
 Route::prefix('/paymongo/webhooks')->group(function () {
     Route::post('/source-chargeable', [PaymongoController::class, 'sourceChargeable']);
