@@ -13,6 +13,53 @@ class PaymongoWebhooksController extends Controller
 {
     protected $endpointPayment = 'https://api.paymongo.com/v1/payments';
 
+    /*
+    Example data passed to webhook
+    {
+  "data": {
+    "id": "evt_PE4yFmSXjp6TUuMHDvEaLV9k",
+    "type": "event",
+    "attributes": {
+      "type": "source.chargeable",
+      "livemode": false,
+      "data": {
+        "id": "src_SCFMNRWjgLyQJouGVYscHhQR",
+        "type": "source",
+        "attributes": {
+          "amount": 646400,
+          "billing": {
+            "address": {
+              "city": null,
+              "country": null,
+              "line1": null,
+              "line2": null,
+              "postal_code": null,
+              "state": null
+            },
+            "email": "onie99@example.com",
+            "name": "Columbus Heaney",
+            "phone": null
+          },
+          "currency": "PHP",
+          "livemode": false,
+          "redirect": {
+            "checkout_url": "https:\\/\\/test-sources.paymongo.com\\/sources?id=src_SCFMNRWjgLyQJouGVYscHhQR",
+            "failed": "http:\\/\\/TBD",
+            "success": "http:\\/\\/TBD"
+          },
+          "status": "chargeable",
+          "type": "gcash",
+          "created_at": 1604957856,
+          "updated_at": 1604957878
+        }
+      },
+      "previous_data": [],
+      "created_at": 1604957878,
+      "updated_at": 1604957878
+    }
+  }
+}
+    */
     public function sourceChargeable(Request $request)
     {
         $pmResponse = $request->input();
