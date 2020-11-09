@@ -15,8 +15,9 @@ class PaymongoWebhooksController extends Controller
 
     public function sourceChargeable(Request $request)
     {
-        $sourceId = $request->data->attributes->data->id;
-        $pmAmount = $request->data->attributes->data->attributes->amount;
+        $pmResponse = $request->input();
+        $sourceId = $pmResponse['data']['attributes']['data']['id'];
+        $pmAmount = $pmResponse['data']['attributes']['data']['attributes']['amount'] / 100;
 
         $payment = TransactionPayment::with(['transaction', 'transaction.buyer'])
             ->where('paymongo_source_id', $sourceId)->first();
