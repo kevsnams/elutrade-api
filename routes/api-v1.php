@@ -3,6 +3,7 @@
 use App\Http\Controllers\v1\UserController;
 use App\Http\Controllers\v1\AuthController;
 use App\Http\Controllers\v1\Payment\PaymongoController;
+use App\Http\Controllers\v1\Payment\PaymongoWebhooksController;
 use App\Http\Controllers\v1\Payment\PaypalController;
 use App\Http\Controllers\v1\SignupController;
 use App\Http\Controllers\v1\TransactionController;
@@ -25,6 +26,10 @@ Route::post('/signup/google', [SignupController::class, 'google']);
 Route::apiResource('transactions', TransactionController::class);
 Route::apiResource('users', UserController::class)
     ->only(['show']);
+
+Route::prefix('/paymongo/webhooks')->group(function () {
+    Route::post('/source-chargeable', [PaymongoWebhooksController::class, 'sourceChargeable']);
+});
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/auth/user', [AuthController::class, 'user']);

@@ -15,8 +15,8 @@ return [
         'source' => [
             'chargeable' => [
                 // TODO get from env
-                'id' => 'hook_u1tGny6Ludz1d6w5Mdj2YMfk',
-                'url' => 'https://api.elutrade.com/paymongo/webhooks/source-chargeable'
+                'id' => 'hook_QFJVfN5W4bo42X1X2Rk8aZuu',
+                'url' => 'https://api.elutrade.com/api/v1/paymongo/webhooks/source-chargeable'
             ]
         ]
     ]

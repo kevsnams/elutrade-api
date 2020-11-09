@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\v1\Payment;
 
+use App\Http\Controllers\Controller;
 use App\Models\TransactionLog;
 use App\Models\TransactionPayment;
 use Illuminate\Http\Request;
