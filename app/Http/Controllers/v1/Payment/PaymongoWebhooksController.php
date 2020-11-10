@@ -94,7 +94,7 @@ class PaymongoWebhooksController extends Controller
         if (is_null($payment->transaction->buyer)) {
             TransactionLog::create([
                 'transaction_id' => $payment->transaction->id,
-                'description' => 'Payment transactio does not have a buyer. Cancelling payment.',
+                'description' => 'Payment transaction does not have a buyer. Cancelling payment.',
                 'json_details' => json_encode([
                     'success' => false,
                     'mode' => $payment->mode,

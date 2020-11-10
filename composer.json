@@ -19,7 +19,8 @@
         "mtvs/eloquent-hashids": "^3.0",
         "paypal/paypal-checkout-sdk": "^1.0",
         "spatie/laravel-json-api-paginate": "^1.9",
-        "spatie/laravel-query-builder": "^3.3"
+        "spatie/laravel-query-builder": "^3.3",
+        "themsaid/laravel-mail-preview": "^4.0"
     },
     "require-dev": {
         "facade/ignition": "^2.3.6",
