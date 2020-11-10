@@ -14,7 +14,6 @@ return [
     'webhooks' => [
         'source' => [
             'chargeable' => [
-                // TODO get from env
                 'id' => env('PAYMONGO_WEBHOOKS_SOURCE_CHARGEABLE_ID'),
                 'url' => env('PAYMONGO_WEBHOOKS_SOURCE_CHARGEABLE_URL')
             ]
