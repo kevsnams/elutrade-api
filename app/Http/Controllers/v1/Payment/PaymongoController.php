@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 class PaymongoController extends Controller
 {
     /*
+    TODO add to docs
     Example success response:
     {
         "data": {

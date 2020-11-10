@@ -9,6 +9,7 @@ use App\Models\Transaction;
 use App\Models\TransactionPayment;
 use App\Models\User;
 use Illuminate\Http\Request;
+use RandomLib\Factory;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 use Vinkla\Hashids\Facades\Hashids;
@@ -17,6 +18,9 @@ class DevController extends Controller
 {
     public function playground(Request $request)
     {
-        dd(Hashids::encode(38));
+        $randomLibFactory = new Factory();
+        $generator = $randomLibFactory->getMediumStrengthGenerator();
+
+        dd($generator->generateString(6, '0123456789'));
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'enableSignupVerification' => env('SIGNUP_ENABLE_VERIFICATIONS', false),
 
     /*
     |--------------------------------------------------------------------------

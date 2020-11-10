@@ -19,9 +19,18 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/auth', [AuthController::class, 'login']);
 
-Route::post('/signup/email', [SignupController::class, 'email']);
-Route::post('/signup/facebook', [SignupController::class, 'facebook']);
-Route::post('/signup/google', [SignupController::class, 'google']);
+Route::prefix('/signup')->group(function () {
+    Route::post('/email', [SignupController::class, 'email']);
+
+    Route::prefix('/email')->group(function () {
+        Route::post('/verify', [SignupController::class, 'emailVerify']);
+        Route::post('/resend', [SignupController::class, 'emailVerificationResend']);
+    });
+
+
+    Route::post('/facebook', [SignupController::class, 'facebook']);
+    Route::post('/google', [SignupController::class, 'google']);
+});
 
 Route::apiResource('transactions', TransactionController::class);
 Route::apiResource('users', UserController::class)
