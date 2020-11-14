@@ -22,6 +22,10 @@ class Transaction extends Model
         'seller_user_id', 'buyer_user_id', 'id'
     ];
 
+    protected $fillable = [
+        'buyer_user_id', 'seller_user_id', 'amount'
+    ];
+
     protected $appends = [
         'hash_id'
     ];

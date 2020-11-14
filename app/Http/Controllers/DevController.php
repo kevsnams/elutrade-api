@@ -18,9 +18,6 @@ class DevController extends Controller
 {
     public function playground(Request $request)
     {
-        $randomLibFactory = new Factory();
-        $generator = $randomLibFactory->getMediumStrengthGenerator();
-
-        dd($generator->generateString(6, '0123456789'));
+        dd($request->user());
     }
 }

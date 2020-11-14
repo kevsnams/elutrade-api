@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\v1;
 
+use App\Elutrade\Transaction\Facade\TransactionService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\TransactionIndexRequest;
 use App\Http\Requests\TransactionLogsRequest;
@@ -55,19 +56,9 @@ class TransactionController extends Controller
      */
     public function store(TransactionStoreRequest $request)
     {
-        $transaction = new Transaction();
-
-        $transaction->seller_user_id = $request->user()->id;
-
-        if (!is_null($request->buyer)) {
-            $transaction->buyer_user_id = $request->buyer;
-        }
-
-        $transaction->amount = round($request->amount, 2);
-        $transaction->save();
-        $transaction->refresh();
-
-        return new ApiResource($transaction);
+        return new ApiResource(
+            TransactionService::create($request->user(), $request->validated())
+        );
     }
 
     /**
@@ -105,32 +96,9 @@ class TransactionController extends Controller
             ->ofSeller($request->user()->id)
             ->findByHashid($id);
 
-        if (!$transaction) {
-            throw new AuthenticationException();
-        }
-
-        $hasBuyer = !is_null($transaction->buyer);
-        $filledBuyer = filled($request->buyer);
-
-        if ($hasBuyer && $filledBuyer) {
-            throw ValidationException::withMessages([
-                'buyer' => ['This transaction already has a buyer']
-            ]);
-        }
-
-        if (!$hasBuyer && $filledBuyer) {
-            $transaction->buyer_user_id = $request->buyer;
-        }
-
-        if (filled($request->amount)) {
-            $transaction->amount = round($request->amount, 2);
-        }
-
-        if ($transaction->isDirty()) {
-            $transaction->save();
-        }
-
-        return new ApiResource($transaction);
+        return new ApiResource(
+            TransactionService::update($transaction, $request->user(), $request->validated())
+        );
     }
 
     /**

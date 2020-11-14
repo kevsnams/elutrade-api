@@ -175,6 +175,8 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        // ELUTRADE Providers
+        App\Providers\ElutradeServiceProvider::class
     ],
 
     /*
