@@ -48,9 +48,9 @@ Route::middleware('auth:sanctum')->group(function () {
         ->only(['index', 'show']);
 
     Route::prefix('/transaction/payment/paypal')->group(function () {
-        Route::post('/create', [PaypalController::class, 'postCreate']);
-        Route::post('/capture', [PaypalController::class, 'postCapture']);
-        Route::post('/cancel', [PaypalController::class, 'postCancel']);
+        Route::post('/create', [PaypalController::class, 'create']);
+        Route::post('/capture', [PaypalController::class, 'capture']);
+        Route::post('/cancel', [PaypalController::class, 'cancel']);
     });
 
     Route::prefix('/transaction/payment/paymongo')->group(function () {

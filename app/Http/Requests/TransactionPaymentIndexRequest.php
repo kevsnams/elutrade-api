@@ -54,7 +54,7 @@ class TransactionPaymentIndexRequest extends FormRequest
                 'sometimes',
                 'integer',
                 Rule::in([
-                    TransactionPayment::MODE_PAYPAL
+                    TransactionPayment::modes()
                 ])
             ]
         ];

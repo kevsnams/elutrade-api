@@ -9,6 +9,7 @@ use App\Models\Transaction;
 use App\Models\TransactionPayment;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use RandomLib\Factory;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -18,6 +19,8 @@ class DevController extends Controller
 {
     public function playground(Request $request)
     {
-        dd($request->user());
+        return ValidationException::withMessages([
+            'test' => ['foo bar']
+        ])->errors();
     }
 }

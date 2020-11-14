@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
-use App\Elutrade\Transaction\Transaction;
+use App\Elutrade\Payment\Payment as ElutradePayment;
+use App\Elutrade\Transaction\Transaction as ElutradeTransaction;
+use App\Models\TransactionPayment;
 use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Support\ServiceProvider;
 
@@ -15,8 +17,12 @@ class ElutradeServiceProvider extends ServiceProvider implements DeferrableProvi
      */
     public function register()
     {
-        $this->app->bind(Transaction::class, function ($app) {
-            return new Transaction($app);
+        $this->app->bind(ElutradeTransaction::class, function ($app) {
+            return new ElutradeTransaction($app);
+        });
+
+        $this->app->bind(ElutradePayment::class, function ($app) {
+            return new ElutradePayment($app);
         });
     }
 
@@ -32,6 +38,6 @@ class ElutradeServiceProvider extends ServiceProvider implements DeferrableProvi
 
     public function provides()
     {
-        return [Transaction::class];
+        return [ElutradeTransaction::class, ElutradePayment::class];
     }
 }

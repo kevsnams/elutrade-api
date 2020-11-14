@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Mtvs\EloquentHashids\HasHashid;
 use Mtvs\EloquentHashids\HashidRouting;
+use ReflectionClass;
 use Vinkla\Hashids\Facades\Hashids;
 
 class TransactionPayment extends Model
@@ -55,5 +56,14 @@ class TransactionPayment extends Model
             $id = is_string($id) ? Hashids::decode($id)[0] : $id;
             $childQuery->where('buyer_user_id', $id);
         });
+    }
+
+    public static function modes()
+    {
+        return [
+            self::MODE_PAYPAL,
+            self::MODE_PAYMONGO_GCASH,
+            self::MODE_PAYMONGO_GRABPAY
+        ];
     }
 }
