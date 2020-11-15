@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\v1\Payment;
 
+use App\Elutrade\Payment\Facade\PaymentService;
 use App\Http\Controllers\Controller;
 use App\Models\Transaction;
 use App\Models\TransactionPayment;
@@ -9,6 +10,18 @@ use Illuminate\Http\Request;
 
 class PaymongoController extends Controller
 {
+    public function gcash(Request $request)
+    {
+        $request->validate([
+            'transaction' => [
+                'required', 'string'
+            ]
+        ]);
+
+        return PaymentService::paymongo()->gcash(
+            Transaction::ofBuyer($request->user()->id)->findByHashidOrFail($request->transaction)
+        )->create();
+    }
     /*
     TODO add to docs
     Example success response:

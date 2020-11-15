@@ -12,6 +12,7 @@ use PayPalCheckoutSdk\Orders\OrdersCaptureRequest;
 use PayPalCheckoutSdk\Orders\OrdersCreateRequest;
 use PayPalCheckoutSdk\Orders\OrdersGetRequest;
 use PayPalHttp\HttpException;
+use App\Elutrade\Payment\APIs\Base;
 
 class Paypal extends Base
 {
